@@ -1,10 +1,10 @@
 <?php
 
-namespace Spatie\LaravelStatistics\Commands;
+namespace Spatie\Statistics\Commands;
 
 use Illuminate\Console\Command;
 
-class LaravelStatisticsCommand extends Command
+class StatisticsCommand extends Command
 {
     public $signature = 'laravel-statistics';
 

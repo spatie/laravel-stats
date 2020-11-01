@@ -27,13 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\LaravelStatistics\\": "src",
-            "Spatie\\LaravelStatistics\\Database\\Factories\\": "database/factories"
+            "Spatie\\Statistics\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\LaravelStatistics\\Tests\\": "tests"
+            "Spatie\\Statistics\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -48,11 +47,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\LaravelStatistics\\LaravelStatisticsServiceProvider"
-            ],
-            "aliases": {
-                "LaravelStatistics": "Spatie\\LaravelStatistics\\LaravelStatisticsFacade"
-            }
+                "Spatie\\Statistics\\StatisticsServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",

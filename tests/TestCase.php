@@ -1,41 +1,33 @@
 <?php
 
-namespace Spatie\LaravelStatistics\Tests;
+namespace Spatie\Statistics\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Spatie\LaravelStatistics\LaravelStatisticsServiceProvider;
+use Spatie\Statistics\StatisticsServiceProvider;
 
 class TestCase extends Orchestra
 {
-    public function setUp(): void
+    use DatabaseMigrations;
+
+    protected function setUp(): void
     {
         parent::setUp();
 
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Spatie\\LaravelStatistics\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
+        $this->setupDatabase();
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LaravelStatisticsServiceProvider::class,
+            StatisticsServiceProvider::class,
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function setupDatabase()
     {
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
+        include_once __DIR__.'/../database/migrations/create_statistic_events_table.php.stub';
 
-        /*
-        include_once __DIR__.'/../database/migrations/create_laravel_statistics_table.php.stub';
-        (new \CreatePackageTable())->up();
-        */
+        (new \CreateStatisticEventsTable())->up();
     }
 }

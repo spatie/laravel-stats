@@ -1,11 +1,12 @@
 <?php
 
-namespace Spatie\LaravelStatistics;
+namespace Spatie\Statistics;
 
 use Illuminate\Support\ServiceProvider;
-use Spatie\LaravelStatistics\Commands\LaravelStatisticsCommand;
+use Spatie\src\Commands\LaravelStatisticsCommand;
+use Spatie\Statistics\Commands\StatisticsCommand;
 
-class LaravelStatisticsServiceProvider extends ServiceProvider
+class StatisticsServiceProvider extends ServiceProvider
 {
     public function boot()
     {
@@ -26,7 +27,7 @@ class LaravelStatisticsServiceProvider extends ServiceProvider
             }
 
             $this->commands([
-                LaravelStatisticsCommand::class,
+                StatisticsCommand::class,
             ]);
         }
 

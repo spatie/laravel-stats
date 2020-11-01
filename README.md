@@ -1,3 +1,5 @@
+**WIP: do not use**
+
 # Easily track application stats like orders, subscriptions and users and their change over time
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-statistics.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-statistics)
@@ -5,7 +7,65 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-statistics.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-statistics)
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Track metrics:
+
+```php
+SubscriptionStats::increase();
+SubscriptionStats::decrease(12);
+OrderStats::set(1337);
+OrderStats::set(1337, now()->subMonth());
+```
+
+Load stats ready for graphing:
+
+```php
+Statistics::make([SubscriptionStats::class, OrderStats::class])
+    ->groupByWeek()
+    ->from(now()->subMonth())
+    ->to(now());
+
+// Outputs:
+
+[
+    'unit' => 'week',
+    'labels' => [
+        'SubscriptionStats' => 'Subscriptions',
+        'OrderStats' => 'Orders',
+    ],
+    'data' => [
+        [
+            'subscriptions' => [
+                'current' => 123,
+                'additions' => 10,
+                'subtractions' => 13,
+                'difference' => -3,
+            ],
+            'orders' => [
+                'current' => 123,
+                'additions' => 10,
+                'subtractions' => 13,
+                'difference' => -3,
+            ],
+            'datetime' => '2020-11-01',
+        ],   
+        [
+            'subscriptions' => [
+                'current' => 130,
+                'additions' => 17,
+                'subtractions' => 10,
+                'difference' => 7,
+            ],
+            'orders' => [
+                'current' => 120,
+                'additions' => 0,
+                'subtractions' => 3,
+                'difference' => -3,
+            ],
+            'datetime' => '2020-11-08',
+        ]       
+    ],
+];
+```
 
 ## Support us
 
