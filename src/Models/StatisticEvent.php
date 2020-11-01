@@ -2,7 +2,6 @@
 
 namespace Spatie\Statistics\Models;
 
-use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 

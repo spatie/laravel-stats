@@ -3,7 +3,6 @@
 namespace Spatie\Statistics;
 
 use Illuminate\Support\ServiceProvider;
-use Spatie\src\Commands\LaravelStatisticsCommand;
 use Spatie\Statistics\Commands\StatisticsCommand;
 
 class StatisticsServiceProvider extends ServiceProvider

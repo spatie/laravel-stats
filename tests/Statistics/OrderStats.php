@@ -6,5 +6,4 @@ use Spatie\Statistics\Statistic;
 
 class OrderStats extends Statistic
 {
-
 }
