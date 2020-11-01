@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Skeleton\Commands;
+namespace Spatie\LaravelStatistics\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelStatisticsCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-statistics';
 
     public $description = 'My command';
 

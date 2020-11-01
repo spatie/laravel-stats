@@ -1,16 +1,16 @@
 {
-    "name": ":vendor_name/:package_name",
-    "description": ":package_description",
+    "name": "spatie/laravel-statistics",
+    "description": "Easily track application stats like orders, subscriptions and users and their change over time",
     "keywords": [
-        ":vendor_name",
-        ":package_name"
+        "spatie",
+        "laravel-statistics"
     ],
-    "homepage": "https://github.com/:vendor_name/:package_name",
+    "homepage": "https://github.com/spatie/laravel-statistics",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": ":author_email",
+            "name": "Alex Vanderbist",
+            "email": "alex.vanderbist@gmail.com",
             "homepage": "https://spatie.be",
             "role": "Developer"
         }
@@ -27,13 +27,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Skeleton\\": "src",
-            "Spatie\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Spatie\\LaravelStatistics\\": "src",
+            "Spatie\\LaravelStatistics\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Skeleton\\Tests\\": "tests"
+            "Spatie\\LaravelStatistics\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -48,10 +48,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Skeleton\\SkeletonServiceProvider"
+                "Spatie\\LaravelStatistics\\LaravelStatisticsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "Spatie\\Skeleton\\SkeletonFacade"
+                "LaravelStatistics": "Spatie\\LaravelStatistics\\LaravelStatisticsFacade"
             }
         }
     },
