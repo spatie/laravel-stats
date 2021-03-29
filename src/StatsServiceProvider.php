@@ -2,7 +2,6 @@
 
 namespace Spatie\Stats;
 
-use Illuminate\Support\ServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Spatie\Stats\Commands\StatsCommand;
