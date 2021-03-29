@@ -2,9 +2,9 @@
 
 # Track application stat changes over time
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-statistics.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-statistics)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/spatie/laravel-statistics/run-tests?label=tests)](https://github.com/spatie/laravel-statistics/actions?query=workflow%3Arun-tests+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-statistics.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-statistics)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-stats.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-stats)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/spatie/laravel-stats/run-tests?label=tests)](https://github.com/spatie/laravel-stats/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-stats.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-stats)
 
 This package is a lightweight solution to summarize changes in your database over time. Here's a quick example where we are going to track the number of subscriptions and cancellations over time.
 
@@ -60,7 +60,7 @@ This will return an array like:
 
 ## Support us
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/package-laravel-statistics-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/package-laravel-statistics-laravel)
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/package-laravel-stats-laravel.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/package-laravel-stats-laravel)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
@@ -71,7 +71,7 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 You can install the package via composer:
 
 ```bash
-composer require spatie/laravel-statistics
+composer require spatie/laravel-stats
 ```
 
 You must publish and run the migrations with:
@@ -84,8 +84,8 @@ php artisan migrate
 ## Usage
 
 ``` php
-$laravel-statistics = new Spatie\LaravelStatistics();
-echo $laravel-statistics->echoPhrase('Hello, Spatie!');
+$laravel-stats = new Spatie\LaravelStatistics();
+echo $laravel-stats->echoPhrase('Hello, Spatie!');
 ```
 
 ## Testing
