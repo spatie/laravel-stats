@@ -10,11 +10,11 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats()
     {
-        (new OrderStats())->increase(10, now()->subDays(14));
-        (new OrderStats())->decrease(2, now()->subDays(12));
-        (new OrderStats())->decrease(1, now()->subDays(10));
-        (new OrderStats())->increase(3, now()->subDays(8));
-        (new OrderStats())->set(3, now()->subDays(6));
+        (new OrderStats())->increase(10, now()->subDays(40));
+        (new OrderStats())->decrease(2, now()->subDays(33));
+        (new OrderStats())->decrease(1, now()->subDays(24));
+        (new OrderStats())->increase(3, now()->subDays(20));
+        (new OrderStats())->set(3, now()->subDays(19));
         (new OrderStats())->decrease(1, now()->subDays(4));
         (new OrderStats())->increase(3, now()->subDays(2));
 

@@ -2,6 +2,7 @@
 
 namespace Spatie\Stats;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Stats\Models\StatsEvent;
@@ -54,17 +55,24 @@ class Stats
     {
         $initialValue = $this->getValue($this->start);
 
-        $differencePerGroup = $this->queryStats()
+        // get latest snapshot per period
+        // use sum of changes for periods without snapshots
+
+        $changes = $this->queryStats()
             ->changes()
-            ->selectRaw('YEARWEEK(timestamp) AS week')
-            ->selectRaw('SUM(value) AS difference')
             ->where('timestamp', '>', $this->start)
-            ->groupByRaw('YEARWEEK(timestamp)')
             ->get();
 
-//        if ($differencePerGroup->isEmpty()) {
-//            return;
-//        }
+        // YEARWEEK(NOW(), 3) mode 3 is the same as PHP's `oW` format
+        $snapshotsPerGroup = $this->queryStats()
+            ->snapshots()
+            ->selectRaw('YEARWEEK(timestamp, 3) AS week')
+            ->selectRaw('SUM(value) AS difference')
+            ->where('timestamp', '>', $this->start)
+            ->groupByRaw('YEARWEEK(timestamp, 3)')
+            ->get();
+
+        $periods = collect($this->generatePeriods());
 
         return $differencePerGroup->reduce(fn (int $previousValue, StatsEvent $statisticEvent) => [
             'difference' => $statisticEvent->difference,
@@ -99,5 +107,18 @@ class Stats
     {
         return StatsEvent::query()
             ->where('statistic', $this->statistic->getKey());
+    }
+
+    protected function generatePeriods(): array
+    {
+        $data = [];
+        $currentDateTime = new Carbon($this->start);
+
+        do {
+            $data[] = $currentDateTime->format('oW'); // week format
+            $currentDateTime->addWeek();
+        } while($currentDateTime->lte($this->end));
+
+        return $data;
     }
 }
