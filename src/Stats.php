@@ -80,7 +80,13 @@ class Stats
 
         $lastPeriodValue = $this->getValue($this->start);
 
-        return $periods->map(function (array $periodBoundaries) use (&$lastPeriodValue) {
+        $changes = $this->queryStats()
+            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->where('created_at', '>=', $this->start)
+            ->where('created_at', '<', $this->end)
+            ->get();
+
+        return $periods->map(function (array $periodBoundaries) use ($changes, &$lastPeriodValue) {
             [$periodStart, $periodEnd] = $periodBoundaries;
 
             $setEvent = $this->queryStats()
@@ -92,8 +98,7 @@ class Stats
             $startValue = $setEvent['value'] ?? $lastPeriodValue;
             $applyChangesAfter = $setEvent['created_at'] ?? $periodStart;
 
-            $difference = $this->queryStats()
-                ->whereType(StatsEvent::TYPE_CHANGE)
+            $difference = $changes
                 ->where('created_at', '>=', $applyChangesAfter)
                 ->where('created_at', '<', $periodEnd)
                 ->sum('value');
@@ -101,16 +106,12 @@ class Stats
             $value = $startValue + $difference;
             $lastPeriodValue = $value;
 
-            $increments = (int) $this->queryStats()
-                ->increments()
-                ->whereType(StatsEvent::TYPE_CHANGE)
+            $increments = (int) $changes->where('value', '>', 0)
                 ->where('created_at', '>=', $periodStart)
                 ->where('created_at', '<', $periodEnd)
                 ->sum('value');
 
-            $decrements = (int) $this->queryStats()
-                ->decrements()
-                ->whereType(StatsEvent::TYPE_CHANGE)
+            $decrements = (int) $changes->where('value', '<', 0)
                 ->where('created_at', '>=', $periodStart)
                 ->where('created_at', '<', $periodEnd)
                 ->sum('value');

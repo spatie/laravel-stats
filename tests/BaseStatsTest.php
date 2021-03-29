@@ -36,13 +36,13 @@ class StatsTest extends TestCase
         $this->assertCount(53, $periods);
 
         $this->assertEquals([
-            'start' => Carbon::parse('2019-01-01'),
-            'end' => Carbon::parse('2019-01-08'),
+            Carbon::parse('2019-01-01'),
+            Carbon::parse('2019-01-08'),
         ], $periods[0]);
 
         $this->assertEquals([
-            'start' => Carbon::parse('2019-12-31'),
-            'end' => Carbon::parse('2020-01-07'),
+            Carbon::parse('2019-12-31'),
+            Carbon::parse('2020-01-07'),
         ], $periods[52]);
     }
 
@@ -66,7 +66,7 @@ class StatsTest extends TestCase
             [
                 'value' => 5,
                 'increments' => +3,
-                'decrements' => -1,
+                'decrements' => 1,
                 'difference' => 2,
                 'start' => now()->subWeeks(2),
                 'end' => now()->subWeeks(1),
@@ -74,7 +74,7 @@ class StatsTest extends TestCase
             [
                 'value' => 5,
                 'increments' => +3,
-                'decrements' => -1,
+                'decrements' => 1,
                 'difference' => 2,
                 'start' => now()->subWeeks(1),
                 'end' => now(),
@@ -87,7 +87,6 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_2()
     {
-
         (new OrderStats())->increase(100, now()->subMonth());
         (new OrderStats())->decrease(1, now()->subDays(13));
         (new OrderStats())->increase(3, now()->subDays(12));
@@ -104,7 +103,7 @@ class StatsTest extends TestCase
             [
                 'value' => 102,
                 'increments' => +3,
-                'decrements' => -1,
+                'decrements' => 1,
                 'difference' => 2,
                 'start' => now()->subWeeks(2),
                 'end' => now()->subWeeks(1),
@@ -112,7 +111,7 @@ class StatsTest extends TestCase
             [
                 'value' => 104,
                 'increments' => +3,
-                'decrements' => -1,
+                'decrements' => 1,
                 'difference' => 2,
                 'start' => now()->subWeeks(1),
                 'end' => now(),
