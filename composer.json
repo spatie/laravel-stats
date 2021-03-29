@@ -1,5 +1,5 @@
 {
-    "name": "spatie/laravel-statistics",
+    "name": "spatie/laravel-stats",
     "description": "Easily track application stats like orders, subscriptions and users and their change over time",
     "keywords": [
         "spatie",
@@ -17,7 +17,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/contracts": "^8.0"
+        "illuminate/contracts": "^8.0",
+        "spatie/laravel-package-tools": "^1.6"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
@@ -27,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\Statistics\\": "src"
+            "Spatie\\Stats\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\Statistics\\Tests\\": "tests"
+            "Spatie\\Stats\\Tests\\": "tests"
         }
     },
     "scripts": {

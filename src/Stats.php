@@ -1,14 +1,14 @@
 <?php
 
-namespace Spatie\Statistics;
+namespace Spatie\Stats;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Statistics\Models\StatisticEvent;
+use Spatie\Stats\Models\StatsEvent;
 
-class Statistics
+class Stats
 {
-    protected Statistic $statistic;
+    protected BaseStats $statistic;
 
     protected string $grouping;
 
@@ -66,7 +66,7 @@ class Statistics
 //            return;
 //        }
 
-        return $differencePerGroup->reduce(fn (int $previousValue, StatisticEvent $statisticEvent) => [
+        return $differencePerGroup->reduce(fn (int $previousValue, StatsEvent $statisticEvent) => [
             'difference' => $statisticEvent->difference,
             'current' => $previousValue + $statisticEvent->difference,
             'week' => $statisticEvent->week,
@@ -97,7 +97,7 @@ class Statistics
 
     protected function queryStats(): Builder
     {
-        return StatisticEvent::query()
+        return StatsEvent::query()
             ->where('statistic', $this->statistic->getKey());
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Statistics\Commands;
+namespace Spatie\Stats\Commands;
 
 use Illuminate\Console\Command;
 
-class StatisticsCommand extends Command
+class StatsCommand extends Command
 {
-    public $signature = 'laravel-statistics';
+    public $signature = 'laravel-stats';
 
     public $description = 'My command';
 

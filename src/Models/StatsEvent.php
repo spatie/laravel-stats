@@ -1,11 +1,11 @@
 <?php
 
-namespace Spatie\Statistics\Models;
+namespace Spatie\Stats\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class StatisticEvent extends Model
+class StatsEvent extends Model
 {
     protected $casts = [
         'value' => 'integer',

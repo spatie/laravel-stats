@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Statistics;
+namespace Spatie\Stats;
 
 use DateTimeInterface;
 use Illuminate\Support\Str;
-use Spatie\Statistics\Models\StatisticEvent;
+use Spatie\Stats\Models\StatsEvent;
 
-abstract class Statistic
+abstract class BaseStats
 {
     public function getKey(): string
     {
@@ -33,9 +33,9 @@ abstract class Statistic
         $this->createEvent('snapshot', $value, $timestamp);
     }
 
-    protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatisticEvent
+    protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent
     {
-        return StatisticEvent::create([
+        return StatsEvent::create([
             'statistic' => $this->getKey(),
             'type' => $type,
             'value' => $value,

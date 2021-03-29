@@ -1,11 +1,11 @@
 <?php
 
-namespace Spatie\Statistics\Tests;
+namespace Spatie\Stats\Tests;
 
-use CreateStatisticEventsTable;
+use CreateStatsEventsTable;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Spatie\Statistics\StatisticsServiceProvider;
+use Spatie\Stats\StatsServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -21,14 +21,14 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            StatisticsServiceProvider::class,
+            StatsServiceProvider::class,
         ];
     }
 
     public function setupDatabase()
     {
-        include_once __DIR__.'/../database/migrations/create_statistic_events_table.php.stub';
+        include_once __DIR__.'/../database/migrations/create_stats_events_table.php.stub';
 
-        (new CreateStatisticEventsTable())->up();
+        (new CreateStatsEventsTable())->up();
     }
 }
