@@ -106,7 +106,7 @@ use Spatie\Stats\BaseStats;
 class SubscriptionStats extends BaseStats
 {
     public function getName() : string{
-        return 'my-custom-key'; // stats will be stored with the `my-custom-key`
+        return 'my-custom-name'; // stats will be stored with using name `my-custom-name`
     }
 }
 ```
