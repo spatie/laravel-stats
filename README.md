@@ -98,14 +98,14 @@ use Spatie\Stats\BaseStats;
 class SubscriptionStats extends BaseStats {}
 ```
 
-By default, the name of the class will be used to store the statistics in the database. To customize the used key, use `getKey`
+By default, the name of the class will be used to store the statistics in the database. To customize the used key, use `getName`
 
 ```php
 use Spatie\Stats\BaseStats;
 
 class SubscriptionStats extends BaseStats
 {
-    public function getKey() : string{
+    public function getName() : string{
         return 'my-custom-key'; // stats will be stored with the `my-custom-key`
     }
 }

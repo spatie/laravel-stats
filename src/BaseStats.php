@@ -7,7 +7,7 @@ use Spatie\Stats\Models\StatsEvent;
 
 abstract class BaseStats
 {
-    public function getKey(): string
+    public function getName(): string
     {
         return class_basename($this);
     }
@@ -36,7 +36,7 @@ abstract class BaseStats
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent
     {
         return StatsEvent::create([
-            'name' => $this->getKey(),
+            'name' => $this->getName(),
             'type' => $type,
             'value' => $value,
             'created_at' => $timestamp ?? now(),

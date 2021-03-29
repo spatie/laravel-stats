@@ -174,13 +174,13 @@ class Stats
     protected function queryStats(): Builder
     {
         return StatsEvent::query()
-            ->where('name', $this->statistic->getKey());
+            ->where('name', $this->statistic->getName());
     }
 
     protected function querySnapshots(): Builder
     {
         return StatsSnapshot::query()
-            ->where('name', $this->statistic->getKey());
+            ->where('name', $this->statistic->getName());
     }
 
     public function generatePeriods(): Collection
