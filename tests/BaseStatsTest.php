@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Spatie\Stats\Stats;
 use Spatie\Stats\Tests\Stats\OrderStats;
 
-class StatsTest extends TestCase
+class BaseStatsTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -18,9 +18,9 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_the_value_at_a_given_time()
     {
-        (new OrderStats())->set(3, now()->subDays(19));
-        (new OrderStats())->decrease(1, now()->subDays(4));
-        (new OrderStats())->increase(3, now()->subDays(2));
+        OrderStats::set(3, now()->subDays(19));
+        OrderStats::decrease(1, now()->subDays(4));
+        OrderStats::increase(3, now()->subDays(2));
 
         $this->assertEquals(0, Stats::for(OrderStats::class)->getValue(now()->subDays(30)));
         $this->assertEquals(3, Stats::for(OrderStats::class)->getValue(now()->subDays(18)));
@@ -48,12 +48,12 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats()
     {
-        (new OrderStats())->set(3, now()->subMonth());
-        (new OrderStats())->decrease(1, now()->subDays(13));
-        (new OrderStats())->increase(3, now()->subDays(12));
-        (new OrderStats())->set(3, now()->subDays(6));
-        (new OrderStats())->decrease(1, now()->subDays(5));
-        (new OrderStats())->increase(3, now()->subDays(4));
+        OrderStats::set(3, now()->subMonth());
+        OrderStats::decrease(1, now()->subDays(13));
+        OrderStats::increase(3, now()->subDays(12));
+        OrderStats::set(3, now()->subDays(6));
+        OrderStats::decrease(1, now()->subDays(5));
+        OrderStats::increase(3, now()->subDays(4));
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
@@ -86,11 +86,11 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_2()
     {
-        (new OrderStats())->increase(100, now()->subMonth());
-        (new OrderStats())->decrease(1, now()->subDays(13));
-        (new OrderStats())->increase(3, now()->subDays(12));
-        (new OrderStats())->decrease(1, now()->subDays(5));
-        (new OrderStats())->increase(3, now()->subDays(4));
+        OrderStats::increase(100, now()->subMonth());
+        OrderStats::decrease(1, now()->subDays(13));
+        OrderStats::increase(3, now()->subDays(12));
+        OrderStats::decrease(1, now()->subDays(5));
+        OrderStats::increase(3, now()->subDays(4));
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
@@ -123,7 +123,7 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_3()
     {
-        (new OrderStats())->increase(3, now()->subDays(12));
+        OrderStats::increase(3, now()->subDays(12));
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
@@ -187,9 +187,9 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_grouped_by_day()
     {
-        (new OrderStats())->set(3, now()->subDays(6));
-        (new OrderStats())->decrease(1, now()->subDays(2));
-        (new OrderStats())->increase(3, now()->subDays(1));
+        OrderStats::set(3, now()->subDays(6));
+        OrderStats::decrease(1, now()->subDays(2));
+        OrderStats::increase(3, now()->subDays(1));
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subDays(3))
@@ -230,9 +230,9 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_grouped_by_hour()
     {
-        (new OrderStats())->set(3, now()->subHours(6));
-        (new OrderStats())->decrease(1, now()->subHours(2));
-        (new OrderStats())->increase(3, now()->subHours(1));
+        OrderStats::set(3, now()->subHours(6));
+        OrderStats::decrease(1, now()->subHours(2));
+        OrderStats::increase(3, now()->subHours(1));
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subHours(3))

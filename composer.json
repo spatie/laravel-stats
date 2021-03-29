@@ -1,6 +1,6 @@
 {
     "name": "spatie/laravel-stats",
-    "description": "Easily track application stats like orders, subscriptions and users and their change over time",
+    "description": "Track application stat changes over time",
     "keywords": [
         "spatie",
         "laravel-statistics"
@@ -10,7 +10,13 @@
     "authors": [
         {
             "name": "Alex Vanderbist",
-            "email": "alex.vanderbist@gmail.com",
+            "email": "alex@spatie.be",
+            "homepage": "https://spatie.be",
+            "role": "Developer"
+        },
+        {
+            "name": "Freek Van der Herten",
+            "email": "freek@spatie.be",
             "homepage": "https://spatie.be",
             "role": "Developer"
         }

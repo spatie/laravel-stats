@@ -18,19 +18,25 @@ abstract class BaseStats
         return Str::title($this->getKey());
     }
 
-    public function increase(int $number = 1, ?DateTimeInterface $timestamp = null)
+    public static function increase(int $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent(StatsEvent::TYPE_CHANGE, $number, $timestamp);
+        $stats = new static;
+
+        $stats->createEvent(StatsEvent::TYPE_CHANGE, $number, $timestamp);
     }
 
-    public function decrease(int $number = 1, ?DateTimeInterface $timestamp = null)
+    public static function decrease(int $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent(StatsEvent::TYPE_CHANGE, -$number, $timestamp);
+        $stats = new static;
+
+        $stats->createEvent(StatsEvent::TYPE_CHANGE, -$number, $timestamp);
     }
 
-    public function set(int $value, ?DateTimeInterface $timestamp = null)
+    public static function set(int $value, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent(StatsEvent::TYPE_SET, $value, $timestamp);
+        $stats = new static;
+
+        $stats->createEvent(StatsEvent::TYPE_SET, $value, $timestamp);
     }
 
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent

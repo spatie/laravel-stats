@@ -12,7 +12,6 @@ class StatsServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('stats')
-            ->hasConfigFile()
             ->hasMigration('create_stats_tables');
     }
 }
