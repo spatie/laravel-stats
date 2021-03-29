@@ -50,7 +50,7 @@ class Statistics
         return $this;
     }
 
-    public function get(): array|int
+    public function get(): array | int
     {
         $initialValue = $this->getValue($this->start);
 
