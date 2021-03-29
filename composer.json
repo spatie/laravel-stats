@@ -3,9 +3,9 @@
     "description": "Track application stat changes over time",
     "keywords": [
         "spatie",
-        "laravel-statistics"
+        "laravel-stats"
     ],
-    "homepage": "https://github.com/spatie/laravel-statistics",
+    "homepage": "https://github.com/spatie/laravel-stats",
     "license": "MIT",
     "authors": [
         {

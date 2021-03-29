@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `laravel-statistics` will be documented in this file
+All notable changes to `laravel-stats` will be documented in this file
 
 ## 1.0.0 - 202X-XX-XX
 
