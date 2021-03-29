@@ -3,7 +3,6 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
-use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\Stats;
 use Spatie\Stats\Tests\Stats\OrderStats;
 

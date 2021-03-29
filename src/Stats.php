@@ -86,6 +86,22 @@ class Stats
             ->where('created_at', '<', $this->end)
             ->get();
 
+        // TODO: Fetch all incr/decr in advance
+//        $changes = $this->queryStats()
+//            ->whereType(StatsEvent::TYPE_CHANGE)
+//            ->where('created_at', '>=', $this->start)
+//            ->where('created_at', '<', $this->end)
+//            ->selectRaw('sum(values) as difference, sum(values > 0) as increments, sum(values < 0) as decrement')
+//            ->groupByPeriod()
+//            ->get();
+
+        // TODO: Fetch all latest sets per period in advance
+        // DB::select('WITH ranked_teams AS (
+        //   SELECT ROW_NUMBER() OVER (PARTITION BY billing_country ORDER BY id DESC) AS rn, teams.*
+        //   FROM teams
+        // )
+        // SELECT ranked_teams.billing_country FROM ranked_teams WHERE rn = 1');
+
         return $periods->map(function (array $periodBoundaries) use ($changes, &$lastPeriodValue) {
             [$periodStart, $periodEnd] = $periodBoundaries;
 
