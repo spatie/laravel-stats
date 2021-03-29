@@ -22,8 +22,11 @@ class Stats
     public function __construct(string $statistic)
     {
         $this->statistic = new $statistic();
+
         $this->grouping = 'week';
+
         $this->start = now()->subMonth();
+
         $this->end = now();
     }
 
@@ -144,15 +147,14 @@ class Stats
         });
     }
 
+    /**
+     * Gets the value at a point in time by using the previous
+     * snapshot and the changes since that snapshot.
+     */
     public function getValue(DateTimeInterface $dateTime): int
     {
-        /**
-         * Gets the value at a point in time by using the previous
-         * snapshot and the changes since that snapshot.
-         */
-
         $nearestSet = $this->queryStats()
-            ->whereType(StatsEvent::TYPE_SET)
+            ->where('type', StatsEvent::TYPE_SET)
             ->where('created_at', '<', $dateTime)
             ->orderByDesc('created_at')
             ->first();
@@ -161,7 +163,7 @@ class Stats
         $startValue = optional($nearestSet)->value ?? 0;
 
         $differenceSinceSet = $this->queryStats()
-            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->where('type', StatsEvent::TYPE_CHANGE)
             ->where('id', '>', $startId)
             ->where('created_at', '<', $dateTime)
             ->sum('value');

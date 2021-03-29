@@ -10,18 +10,22 @@ class CreateStatsTables extends Migration
     {
         Schema::create('stats_events', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->string('statistic');
             $table->string('type');
             $table->bigInteger('value');
+
             $table->timestamps();
         });
 
         Schema::create('stats_snapshots', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->string('statistic');
             $table->bigInteger('value');
             $table->bigInteger('increase');
             $table->bigInteger('decrease');
+
             $table->timestamps();
         });
     }

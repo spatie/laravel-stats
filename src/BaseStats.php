@@ -13,11 +13,6 @@ abstract class BaseStats
         return class_basename($this);
     }
 
-    public function getLabel(): string
-    {
-        return Str::title($this->getKey());
-    }
-
     public static function increase(int $number = 1, ?DateTimeInterface $timestamp = null)
     {
         $stats = new static;
