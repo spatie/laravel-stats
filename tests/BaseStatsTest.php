@@ -3,6 +3,7 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
+use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\Stats;
 use Spatie\Stats\Tests\Stats\OrderStats;
 
@@ -120,10 +121,10 @@ class StatsTest extends TestCase
 
         $this->assertEquals($expected, $stats->toArray());
     }
+
     /** @test */
     public function it_can_get_stats_3()
     {
-
         (new OrderStats())->increase(3, now()->subDays(12));
 
         $stats = Stats::for(OrderStats::class)
@@ -178,6 +179,54 @@ class StatsTest extends TestCase
                 'decrements' => 0,
                 'difference' => 0,
                 'start' => now()->subWeeks(1),
+                'end' => now(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_grouped_by_day()
+    {
+        ray()->clearScreen();
+        (new OrderStats())->set(3, now()->subDays(6));
+        (new OrderStats())->decrease(1, now()->subDays(2));
+        (new OrderStats())->increase(3, now()->subDays(1));
+
+        $stats = Stats::for(OrderStats::class)
+            ->start(now()->subDays(3))
+            ->end(now())
+            ->groupByDay()
+            ->get();
+
+        ray('first period', [now()->subDays(3), now()->subDays(2)]);
+
+        ray(StatsEvent::where('value', -1)->first());
+
+        $expected = [
+            [
+                'value' => 3,
+                'increments' => 0,
+                'decrements' => 0,
+                'difference' => 0,
+                'start' => now()->subDays(3),
+                'end' => now()->subDays(2),
+            ],
+            [
+                'value' => 2,
+                'increments' => 0,
+                'decrements' => 1,
+                'difference' => -1,
+                'start' => now()->subDays(2),
+                'end' => now()->subDays(1),
+            ],
+            [
+                'value' => 5,
+                'increments' => 3,
+                'decrements' => 0,
+                'difference' => 3,
+                'start' => now()->subDays(1),
                 'end' => now(),
             ],
         ];

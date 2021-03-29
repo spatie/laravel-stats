@@ -32,9 +32,23 @@ class Stats
         return new self($statistic);
     }
 
+    public function groupByMonth(): self
+    {
+        $this->grouping = 'month';
+
+        return $this;
+    }
+
     public function groupByWeek(): self
     {
         $this->grouping = 'week';
+
+        return $this;
+    }
+
+    public function groupByDay(): self
+    {
+        $this->grouping = 'day';
 
         return $this;
     }
@@ -64,7 +78,8 @@ class Stats
 
             $setEvent = $this->queryStats()
                 ->whereType(StatsEvent::TYPE_SET)
-                ->whereBetween('created_at', $periodBoundaries)
+                ->where('created_at', '>=', $periodStart)
+                ->where('created_at', '<', $periodEnd)
                 ->latest()->first();
 
             $startValue = $setEvent['value'] ?? $lastPeriodValue;
@@ -72,7 +87,8 @@ class Stats
 
             $difference = $this->queryStats()
                 ->whereType(StatsEvent::TYPE_CHANGE)
-                ->whereBetween('created_at', [$applyChangesAfter, $periodEnd])
+                ->where('created_at', '>=', $applyChangesAfter)
+                ->where('created_at', '<', $periodEnd)
                 ->sum('value');
 
             $value = $startValue + $difference;
@@ -81,14 +97,17 @@ class Stats
             $increments = (int) $this->queryStats()
                 ->increments()
                 ->whereType(StatsEvent::TYPE_CHANGE)
-                ->whereBetween('created_at', [$periodStart, $periodEnd])
+                ->where('created_at', '>=', $periodStart)
+                ->where('created_at', '<', $periodEnd)
                 ->sum('value');
 
             $decrements = (int) $this->queryStats()
                 ->decrements()
                 ->whereType(StatsEvent::TYPE_CHANGE)
-                ->whereBetween('created_at', [$periodStart, $periodEnd])
+                ->where('created_at', '>=', $periodStart)
+                ->where('created_at', '<', $periodEnd)
                 ->sum('value');
+            $decrements = abs($decrements);
 
             return [
                 'start' => $periodStart,
@@ -96,7 +115,7 @@ class Stats
                 'value' => $value,
                 'increments' => $increments,
                 'decrements' => $decrements,
-                'difference' => $increments + $decrements,
+                'difference' => $increments - $decrements,
             ];
         });
     }
@@ -120,7 +139,7 @@ class Stats
         $differenceSinceSet = $this->queryStats()
             ->whereType(StatsEvent::TYPE_CHANGE)
             ->where('id', '>', $startId)
-            ->where('created_at', '<=', $dateTime)
+            ->where('created_at', '<', $dateTime)
             ->sum('value');
 
         return $startValue + $differenceSinceSet;
