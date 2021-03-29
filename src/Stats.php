@@ -117,7 +117,7 @@ class Stats
         do {
             $data[] = $currentDateTime->format('oW'); // week format
             $currentDateTime->addWeek();
-        } while($currentDateTime->lte($this->end));
+        } while ($currentDateTime->lte($this->end));
 
         return $data;
     }
