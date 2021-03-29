@@ -13,7 +13,6 @@ class StatsServiceProvider extends PackageServiceProvider
         $package
             ->name('stats')
             ->hasConfigFile()
-            ->hasMigration('create_stats_tables')
-            ->hasCommand(StatsCommand::class);
+            ->hasMigration('create_stats_tables');
     }
 }
