@@ -20,17 +20,17 @@ abstract class BaseStats
 
     public function increase(int $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent('change', $number, $timestamp);
+        $this->createEvent(StatsEvent::TYPE_CHANGE, $number, $timestamp);
     }
 
     public function decrease(int $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent('change', -$number, $timestamp);
+        $this->createEvent(StatsEvent::TYPE_CHANGE, -$number, $timestamp);
     }
 
     public function set(int $value, ?DateTimeInterface $timestamp = null)
     {
-        $this->createEvent('snapshot', $value, $timestamp);
+        $this->createEvent(StatsEvent::TYPE_SET, $value, $timestamp);
     }
 
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent
@@ -39,7 +39,7 @@ abstract class BaseStats
             'statistic' => $this->getKey(),
             'type' => $type,
             'value' => $value,
-            'timestamp' => $timestamp ?? now(),
+            'created_at' => $timestamp ?? now(),
         ]);
     }
 }

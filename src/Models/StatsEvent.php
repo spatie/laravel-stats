@@ -7,29 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatsEvent extends Model
 {
+    const TYPE_SET = 'set';
+    const TYPE_CHANGE = 'change';
+
     protected $casts = [
         'value' => 'integer',
     ];
 
     protected $guarded = [];
 
-    public function scopeChanges(Builder $query)
-    {
-        $query->where('type', 'change');
-    }
-
     public function scopeIncrements(Builder $query)
     {
-        $query->where('type', 'change')->where('value', '>', 0);
+        $query->where('value', '>', 0);
     }
 
     public function scopeDecrements(Builder $query)
     {
-        $query->where('type', 'change')->where('value', '<', 0);
-    }
-
-    public function scopeSnapshots(Builder $query)
-    {
-        $query->where('type', 'snapshot');
+        $query->where('value', '<', 0);
     }
 }

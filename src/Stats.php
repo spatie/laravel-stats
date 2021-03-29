@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Stats\Models\StatsEvent;
+use Spatie\Stats\Models\StatsSnapshot;
 
 class Stats
 {
@@ -51,61 +52,95 @@ class Stats
         return $this;
     }
 
-    public function get(): array | int
+    public function get(): array
     {
+        // get initial value
+        // get changes per week
+        // apply changes to initial value per week
+
+
+        // events W1
+        // increase 100
+        // increase 51
+        // snapshot value=151 increase=151 dec=0
+        //
+        // decr 150
+        // increase 100
+        // increase 51
+
+        // output
+        // value 151
+        // incr 151
+        // decr 0
+        //
+        // value
+
+
+
         $initialValue = $this->getValue($this->start);
+
 
         // get latest snapshot per period
         // use sum of changes for periods without snapshots
 
         $changes = $this->queryStats()
-            ->changes()
-            ->where('timestamp', '>', $this->start)
+            ->where('created_at', '>', $this->start)
             ->get();
 
         // YEARWEEK(NOW(), 3) mode 3 is the same as PHP's `oW` format
         $snapshotsPerGroup = $this->queryStats()
             ->snapshots()
-            ->selectRaw('YEARWEEK(timestamp, 3) AS week')
+            ->selectRaw('YEARWEEK(created_at, 3) AS week')
             ->selectRaw('SUM(value) AS difference')
-            ->where('timestamp', '>', $this->start)
-            ->groupByRaw('YEARWEEK(timestamp, 3)')
+            ->where('created_at', '>', $this->start)
+            ->groupByRaw('YEARWEEK(created_at, 3)')
             ->get();
 
         $periods = collect($this->generatePeriods());
 
-        return $differencePerGroup->reduce(fn (int $previousValue, StatsEvent $statisticEvent) => [
-            'difference' => $statisticEvent->difference,
-            'current' => $previousValue + $statisticEvent->difference,
-            'week' => $statisticEvent->week,
-        ], $initialValue);
+        return 0;
+
+//        return $differencePerGroup->reduce(fn (int $previousValue, StatsEvent $statisticEvent) => [
+//            'difference' => $statisticEvent->difference,
+//            'current' => $previousValue + $statisticEvent->difference,
+//            'week' => $statisticEvent->week,
+//        ], $initialValue);
     }
 
-    protected function getValue(DateTimeInterface $dateTime): int
+    public function getValue(DateTimeInterface $dateTime): int
     {
         /**
          * Gets the value at a point in time by using the previous
          * snapshot and the changes since that snapshot.
          */
 
-        $nearestSnapshot = $this->queryStats()
-            ->where('type', 'snapshot')
-            ->where('timestamp', '<', $dateTime)
-            ->orderByDesc('timestamp')
+        $nearestSet = $this->queryStats()
+            ->whereType(StatsEvent::TYPE_SET)
+            ->where('created_at', '<', $dateTime)
+            ->orderByDesc('created_at')
             ->first();
 
-        $startTimestamp = optional($nearestSnapshot)->timestamp ?? 0;
-        $startValue = optional($nearestSnapshot)->value ?? 0;
+        $startId = optional($nearestSet)->id ?? 0;
+        $startValue = optional($nearestSet)->value ?? 0;
 
-        return $startValue + $this->queryStats()
-            ->changes()
-            ->where('timestamp', '>', $startTimestamp)
+        $differenceSinceSet = $this->queryStats()
+            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->where('id', '>', $startId)
+            ->where('created_at', '<=', $dateTime)
             ->sum('value');
+
+        return $startValue + $differenceSinceSet;
     }
 
     protected function queryStats(): Builder
     {
         return StatsEvent::query()
+            ->where('statistic', $this->statistic->getKey());
+    }
+
+    protected function querySnapshots(): Builder
+    {
+        return StatsSnapshot::query()
             ->where('statistic', $this->statistic->getKey());
     }
 
