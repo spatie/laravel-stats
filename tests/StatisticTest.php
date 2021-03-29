@@ -2,19 +2,19 @@
 
 namespace Spatie\Stats\Tests;
 
-use Spatie\Stats\Tests\Statistics\OrderBaseStats;
+use Spatie\Stats\Tests\Stats\OrderStats;
 
 class StatisticTest extends TestCase
 {
     /** @test */
     public function it_can_create_events_for_increments()
     {
-        $stats = new OrderBaseStats();
+        $stats = new OrderStats();
 
         $stats->increase(1);
 
         $this->assertDatabaseHas('stats_events', [
-            'statistic' => 'OrderBaseStats',
+            'statistic' => 'OrderStats',
             'value' => 1,
             'type' => 'change',
         ]);
