@@ -14,7 +14,7 @@ class StatisticTest extends TestCase
         $stats->increase(1);
 
         $this->assertDatabaseHas('stats_events', [
-            'statistic' => 'OrderStats',
+            'name' => 'OrderStats',
             'value' => 1,
             'type' => 'change',
         ]);

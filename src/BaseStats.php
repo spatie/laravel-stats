@@ -37,7 +37,7 @@ abstract class BaseStats
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent
     {
         return StatsEvent::create([
-            'statistic' => $this->getKey(),
+            'name' => $this->getKey(),
             'type' => $type,
             'value' => $value,
             'created_at' => $timestamp ?? now(),
