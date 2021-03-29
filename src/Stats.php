@@ -5,6 +5,7 @@ namespace Spatie\Stats;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\Models\StatsSnapshot;
 
@@ -52,59 +53,52 @@ class Stats
         return $this;
     }
 
-    public function get(): array
+    public function get(): Collection
     {
-        // get initial value
-        // get changes per week
-        // apply changes to initial value per week
+        $periods = $this->generatePeriods();
 
+        $lastPeriodValue = $this->getValue($this->start);
 
-        // events W1
-        // increase 100
-        // increase 51
-        // snapshot value=151 increase=151 dec=0
-        //
-        // decr 150
-        // increase 100
-        // increase 51
+        return $periods->map(function (array $periodBoundaries) use (&$lastPeriodValue) {
+            [$periodStart, $periodEnd] = $periodBoundaries;
 
-        // output
-        // value 151
-        // incr 151
-        // decr 0
-        //
-        // value
+            $setEvent = $this->queryStats()
+                ->whereType(StatsEvent::TYPE_SET)
+                ->whereBetween('created_at', $periodBoundaries)
+                ->latest()->first();
 
+            $startValue = $setEvent['value'] ?? $lastPeriodValue;
+            $applyChangesAfter = $setEvent['created_at'] ?? $periodStart;
 
+            $difference = $this->queryStats()
+                ->whereType(StatsEvent::TYPE_CHANGE)
+                ->whereBetween('created_at', [$applyChangesAfter, $periodEnd])
+                ->sum('value');
 
-        $initialValue = $this->getValue($this->start);
+            $value = $startValue + $difference;
+            $lastPeriodValue = $value;
 
+            $increments = (int) $this->queryStats()
+                ->increments()
+                ->whereType(StatsEvent::TYPE_CHANGE)
+                ->whereBetween('created_at', [$periodStart, $periodEnd])
+                ->sum('value');
 
-        // get latest snapshot per period
-        // use sum of changes for periods without snapshots
+            $decrements = (int) $this->queryStats()
+                ->decrements()
+                ->whereType(StatsEvent::TYPE_CHANGE)
+                ->whereBetween('created_at', [$periodStart, $periodEnd])
+                ->sum('value');
 
-        $changes = $this->queryStats()
-            ->where('created_at', '>', $this->start)
-            ->get();
-
-        // YEARWEEK(NOW(), 3) mode 3 is the same as PHP's `oW` format
-        $snapshotsPerGroup = $this->queryStats()
-            ->snapshots()
-            ->selectRaw('YEARWEEK(created_at, 3) AS week')
-            ->selectRaw('SUM(value) AS difference')
-            ->where('created_at', '>', $this->start)
-            ->groupByRaw('YEARWEEK(created_at, 3)')
-            ->get();
-
-        $periods = collect($this->generatePeriods());
-
-        return 0;
-
-//        return $differencePerGroup->reduce(fn (int $previousValue, StatsEvent $statisticEvent) => [
-//            'difference' => $statisticEvent->difference,
-//            'current' => $previousValue + $statisticEvent->difference,
-//            'week' => $statisticEvent->week,
-//        ], $initialValue);
+            return [
+                'start' => $periodStart,
+                'end' => $periodEnd,
+                'value' => $value,
+                'increments' => $increments,
+                'decrements' => $decrements,
+                'difference' => $increments + $decrements,
+            ];
+        });
     }
 
     public function getValue(DateTimeInterface $dateTime): int
@@ -144,15 +138,18 @@ class Stats
             ->where('statistic', $this->statistic->getKey());
     }
 
-    protected function generatePeriods(): array
+    public function generatePeriods(): Collection
     {
-        $data = [];
+        $data = collect();
         $currentDateTime = new Carbon($this->start);
 
         do {
-            $data[] = $currentDateTime->format('oW'); // week format
-            $currentDateTime->addWeek();
-        } while ($currentDateTime->lte($this->end));
+            $data->push([
+                $currentDateTime->copy(),
+                $currentDateTime->copy()->add(1, $this->grouping),
+            ]);
+            $currentDateTime->add(1, $this->grouping);
+        } while ($currentDateTime->lt($this->end));
 
         return $data;
     }
