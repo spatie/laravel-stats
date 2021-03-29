@@ -3,7 +3,6 @@
 namespace Spatie\Stats;
 
 use DateTimeInterface;
-use Illuminate\Support\Str;
 use Spatie\Stats\Models\StatsEvent;
 
 abstract class BaseStats
