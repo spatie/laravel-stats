@@ -189,7 +189,6 @@ class StatsTest extends TestCase
     /** @test */
     public function it_can_get_stats_grouped_by_day()
     {
-        ray()->clearScreen();
         (new OrderStats())->set(3, now()->subDays(6));
         (new OrderStats())->decrease(1, now()->subDays(2));
         (new OrderStats())->increase(3, now()->subDays(1));
@@ -199,10 +198,6 @@ class StatsTest extends TestCase
             ->end(now())
             ->groupByDay()
             ->get();
-
-        ray('first period', [now()->subDays(3), now()->subDays(2)]);
-
-        ray(StatsEvent::where('value', -1)->first());
 
         $expected = [
             [
@@ -227,6 +222,49 @@ class StatsTest extends TestCase
                 'decrements' => 0,
                 'difference' => 3,
                 'start' => now()->subDays(1),
+                'end' => now(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_grouped_by_hour()
+    {
+        (new OrderStats())->set(3, now()->subHours(6));
+        (new OrderStats())->decrease(1, now()->subHours(2));
+        (new OrderStats())->increase(3, now()->subHours(1));
+
+        $stats = Stats::for(OrderStats::class)
+            ->start(now()->subHours(3))
+            ->end(now())
+            ->groupByHour()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 3,
+                'increments' => 0,
+                'decrements' => 0,
+                'difference' => 0,
+                'start' => now()->subHours(3),
+                'end' => now()->subHours(2),
+            ],
+            [
+                'value' => 2,
+                'increments' => 0,
+                'decrements' => 1,
+                'difference' => -1,
+                'start' => now()->subHours(2),
+                'end' => now()->subHours(1),
+            ],
+            [
+                'value' => 5,
+                'increments' => 3,
+                'decrements' => 0,
+                'difference' => 3,
+                'start' => now()->subHours(1),
                 'end' => now(),
             ],
         ];

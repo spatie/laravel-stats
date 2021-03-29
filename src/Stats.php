@@ -53,6 +53,13 @@ class Stats
         return $this;
     }
 
+    public function groupByHour(): self
+    {
+        $this->grouping = 'hour';
+
+        return $this;
+    }
+
     public function start(DateTimeInterface $start): self
     {
         $this->start = $start;
