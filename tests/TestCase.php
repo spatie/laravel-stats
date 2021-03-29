@@ -2,6 +2,7 @@
 
 namespace Spatie\Statistics\Tests;
 
+use CreateStatisticEventsTable;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\Statistics\StatisticsServiceProvider;
@@ -28,6 +29,6 @@ class TestCase extends Orchestra
     {
         include_once __DIR__.'/../database/migrations/create_statistic_events_table.php.stub';
 
-        (new \CreateStatisticEventsTable())->up();
+        (new CreateStatisticEventsTable())->up();
     }
 }

@@ -19,7 +19,6 @@ class StatisticsTest extends TestCase
         (new OrderStats())->increase(3, now()->subDays(2));
 
         $a = Statistics::for(OrderStats::class)->start(now()->subWeek())->get();
-        dd($a);
     }
 
     /** @test */
@@ -34,6 +33,5 @@ class StatisticsTest extends TestCase
         (new OrderStats())->increase(3, now()->subWeeks(2));
 
         $a = Statistics::for(OrderStats::class)->start(now()->subWeek())->get();
-        dd($a);
     }
 }
