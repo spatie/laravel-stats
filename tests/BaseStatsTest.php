@@ -37,11 +37,13 @@ class BaseStatsTest extends TestCase
         $this->assertEquals([
             Carbon::parse('2019-01-01'),
             Carbon::parse('2019-01-08'),
+            '201901',
         ], $periods[0]);
 
         $this->assertEquals([
             Carbon::parse('2019-12-31'),
             Carbon::parse('2020-01-07'),
+            '202001',
         ], $periods[52]);
     }
 

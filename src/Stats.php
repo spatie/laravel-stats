@@ -13,7 +13,7 @@ class Stats
 {
     protected BaseStats $statistic;
 
-    protected string $grouping;
+    protected string $period;
 
     protected DateTimeInterface $start;
 
@@ -23,7 +23,7 @@ class Stats
     {
         $this->statistic = new $statistic();
 
-        $this->grouping = 'week';
+        $this->period = 'week';
 
         $this->start = now()->subMonth();
 
@@ -35,30 +35,37 @@ class Stats
         return new self($statistic);
     }
 
+    public function groupByYear(): self
+    {
+        $this->period = 'year';
+
+        return $this;
+    }
+
     public function groupByMonth(): self
     {
-        $this->grouping = 'month';
+        $this->period = 'month';
 
         return $this;
     }
 
     public function groupByWeek(): self
     {
-        $this->grouping = 'week';
+        $this->period = 'week';
 
         return $this;
     }
 
     public function groupByDay(): self
     {
-        $this->grouping = 'day';
+        $this->period = 'day';
 
         return $this;
     }
 
     public function groupByHour(): self
     {
-        $this->grouping = 'hour';
+        $this->period = 'hour';
 
         return $this;
     }
@@ -89,14 +96,7 @@ class Stats
             ->where('created_at', '<', $this->end)
             ->get();
 
-        // TODO: Fetch all incr/decr in advance
-//        $changes = $this->queryStats()
-//            ->whereType(StatsEvent::TYPE_CHANGE)
-//            ->where('created_at', '>=', $this->start)
-//            ->where('created_at', '<', $this->end)
-//            ->selectRaw('sum(values) as difference, sum(values > 0) as increments, sum(values < 0) as decrement')
-//            ->groupByPeriod()
-//            ->get();
+        $differencesPerPeriod = $this->getDifferencesPerPeriod();
 
         // TODO: Fetch all latest sets per period in advance
         // DB::select('WITH ranked_teams AS (
@@ -105,8 +105,8 @@ class Stats
         // )
         // SELECT ranked_teams.billing_country FROM ranked_teams WHERE rn = 1');
 
-        return $periods->map(function (array $periodBoundaries) use ($changes, &$lastPeriodValue) {
-            [$periodStart, $periodEnd] = $periodBoundaries;
+        return $periods->map(function (array $periodBoundaries) use ($changes, $differencesPerPeriod, &$lastPeriodValue) {
+            [$periodStart, $periodEnd, $periodKey] = $periodBoundaries;
 
             $setEvent = $this->queryStats()
                 ->whereType(StatsEvent::TYPE_SET)
@@ -125,24 +125,13 @@ class Stats
             $value = $startValue + $difference;
             $lastPeriodValue = $value;
 
-            $increments = (int) $changes->where('value', '>', 0)
-                ->where('created_at', '>=', $periodStart)
-                ->where('created_at', '<', $periodEnd)
-                ->sum('value');
-
-            $decrements = (int) $changes->where('value', '<', 0)
-                ->where('created_at', '>=', $periodStart)
-                ->where('created_at', '<', $periodEnd)
-                ->sum('value');
-            $decrements = abs($decrements);
-
             return [
                 'start' => $periodStart,
                 'end' => $periodEnd,
                 'value' => $value,
-                'increments' => $increments,
-                'decrements' => $decrements,
-                'difference' => $increments - $decrements,
+                'increments' => $differencesPerPeriod[$periodKey]['increments'] ?? 0,
+                'decrements' => $differencesPerPeriod[$periodKey]['decrements'] ?? 0,
+                'difference' => $differencesPerPeriod[$periodKey]['difference'] ?? 0,
             ];
         });
     }
@@ -191,11 +180,39 @@ class Stats
         do {
             $data->push([
                 $currentDateTime->copy(),
-                $currentDateTime->copy()->add(1, $this->grouping),
+                $currentDateTime->copy()->add(1, $this->period),
+                $currentDateTime->format($this->getPeriodTimestampFormat()),
             ]);
-            $currentDateTime->add(1, $this->grouping);
+
+            $currentDateTime->add(1, $this->period);
         } while ($currentDateTime->lt($this->end));
 
         return $data;
+    }
+
+    protected function getDifferencesPerPeriod()
+    {
+        return $this->queryStats()
+            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->where('created_at', '>=', $this->start)
+            ->where('created_at', '<', $this->end)
+            ->selectRaw('sum(case when value > 0 then value else 0 end) as increments')
+            ->selectRaw('abs(sum(case when value < 0 then value else 0 end)) as decrements')
+            ->selectRaw('sum(value) as difference')
+            ->groupByPeriod($this->period)
+            ->get()
+            ->keyBy('period');
+    }
+
+    public function getPeriodTimestampFormat(): string
+    {
+        return match($this->period) {
+            'year' => 'Y',
+            'month' => 'Y-m',
+            'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'day' => 'Y-m-d',
+            'hour' => 'Y-m-d H',
+            'minute' => 'Y-m-d H:i',
+        };
     }
 }
