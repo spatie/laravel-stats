@@ -54,7 +54,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\Statistics\\StatisticsServiceProvider"
+                "Spatie\\Stats\\StatsServiceProvider"
             ]
         }
     },
