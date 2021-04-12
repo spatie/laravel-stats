@@ -88,8 +88,6 @@ class Stats
     {
         $periods = $this->generatePeriods();
 
-        $lastPeriodValue = $this->getValue($this->start);
-
         $changes = $this->queryStats()
             ->whereType(StatsEvent::TYPE_CHANGE)
             ->where('created_at', '>=', $this->start)
@@ -98,14 +96,9 @@ class Stats
 
         $differencesPerPeriod = $this->getDifferencesPerPeriod();
 
-        $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
-        $rankedSets = $this->queryStats()
-            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
-            ->whereType(StatsEvent::TYPE_SET)
-            ->where('created_at', '>=', $this->start)
-            ->where('created_at', '<', $this->end)
-            ->get();
-        $latestSetPerPeriod = $rankedSets->where('rn', 1);
+        $latestSetPerPeriod = $this->getLatestSetPerPeriod();
+
+        $lastPeriodValue = $this->getValue($this->start);
 
         return $periods->map(function (array $periodBoundaries) use ($latestSetPerPeriod, $changes, $differencesPerPeriod, &$lastPeriodValue) {
             [$periodStart, $periodEnd, $periodKey] = $periodBoundaries;
@@ -113,6 +106,7 @@ class Stats
             $setEvent = $latestSetPerPeriod->where('period', $periodKey)->first();
 
             $startValue = $setEvent['value'] ?? $lastPeriodValue;
+
             $applyChangesAfter = $setEvent['created_at'] ?? $periodStart;
 
             $difference = $changes
@@ -212,5 +206,19 @@ class Stats
             'hour' => 'Y-m-d H',
             'minute' => 'Y-m-d H:i',
         };
+    }
+
+    protected function getLatestSetPerPeriod()
+    {
+        $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
+        $rankedSets = $this->queryStats()
+            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
+            ->whereType(StatsEvent::TYPE_SET)
+            ->where('created_at', '>=', $this->start)
+            ->where('created_at', '<', $this->end)
+            ->get();
+        $latestSetPerPeriod = $rankedSets->where('rn', 1);
+
+        return $latestSetPerPeriod;
     }
 }
