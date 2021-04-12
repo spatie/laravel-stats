@@ -305,7 +305,7 @@ class BaseStatsTest extends TestCase
                 'difference' => 2,
                 'start' => now()->subDay(),
                 'end' => now()->subDays(0),
-            ]
+            ],
         ];
 
         $this->assertEquals($expected, $stats->toArray());
