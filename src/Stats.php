@@ -110,12 +110,6 @@ class Stats
         return $periods->map(function (array $periodBoundaries) use ($latestSetPerPeriod, $changes, $differencesPerPeriod, &$lastPeriodValue) {
             [$periodStart, $periodEnd, $periodKey] = $periodBoundaries;
 
-            $setEventOld = $this->queryStats()
-                ->whereType(StatsEvent::TYPE_SET)
-                ->where('created_at', '>=', $periodStart)
-                ->where('created_at', '<', $periodEnd)
-                ->latest()->first();
-
             $setEvent = $latestSetPerPeriod->where('period', $periodKey)->first();
 
             $startValue = $setEvent['value'] ?? $lastPeriodValue;
