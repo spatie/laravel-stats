@@ -2,7 +2,7 @@
 
 namespace Spatie\Stats;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -99,20 +99,25 @@ class Stats
         $differencesPerPeriod = $this->getDifferencesPerPeriod();
 
         // TODO: Fetch all latest sets per period in advance
-        // DB::select('WITH ranked_teams AS (
-        //   SELECT ROW_NUMBER() OVER (PARTITION BY billing_country ORDER BY id DESC) AS rn, teams.*
-        //   FROM teams
-        // )
-        // SELECT ranked_teams.billing_country FROM ranked_teams WHERE rn = 1');
+        $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
+        $rankedSets = $this->queryStats()
+            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
+            ->whereType(StatsEvent::TYPE_SET)
+            ->where('created_at', '>=', $this->start)
+            ->where('created_at', '<', $this->end)
+            ->get();
+        $latestSetPerPeriod = $rankedSets->where('rn', 1);
 
-        return $periods->map(function (array $periodBoundaries) use ($changes, $differencesPerPeriod, &$lastPeriodValue) {
+        return $periods->map(function (array $periodBoundaries) use ($latestSetPerPeriod, $changes, $differencesPerPeriod, &$lastPeriodValue) {
             [$periodStart, $periodEnd, $periodKey] = $periodBoundaries;
 
-            $setEvent = $this->queryStats()
+            $setEventOld = $this->queryStats()
                 ->whereType(StatsEvent::TYPE_SET)
                 ->where('created_at', '>=', $periodStart)
                 ->where('created_at', '<', $periodEnd)
                 ->latest()->first();
+
+            $setEvent = $latestSetPerPeriod->where('period', $periodKey)->first();
 
             $startValue = $setEvent['value'] ?? $lastPeriodValue;
             $applyChangesAfter = $setEvent['created_at'] ?? $periodStart;
@@ -128,10 +133,10 @@ class Stats
             return [
                 'start' => $periodStart,
                 'end' => $periodEnd,
-                'value' => $value,
-                'increments' => $differencesPerPeriod[$periodKey]['increments'] ?? 0,
-                'decrements' => $differencesPerPeriod[$periodKey]['decrements'] ?? 0,
-                'difference' => $differencesPerPeriod[$periodKey]['difference'] ?? 0,
+                'value' => (int) $value,
+                'increments' => (int) ($differencesPerPeriod[$periodKey]['increments'] ?? 0),
+                'decrements' => (int) ($differencesPerPeriod[$periodKey]['decrements'] ?? 0),
+                'difference' => (int) ($differencesPerPeriod[$periodKey]['difference'] ?? 0),
             ];
         });
     }

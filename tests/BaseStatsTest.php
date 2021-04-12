@@ -271,4 +271,43 @@ class BaseStatsTest extends TestCase
 
         $this->assertEquals($expected, $stats->toArray());
     }
+
+    /** @test */
+    public function it_can_get_stats_based_on_youngest_sets_in_periods()
+    {
+        OrderStats::set(1, now()->subHours(49));
+        OrderStats::set(2, now()->subHours(37));
+        OrderStats::set(3, now()->subHours(25)); // This set will be used for day 1
+        OrderStats::decrease(2, now()->subHours(16)); // These decrements and increments will still show up in day 2
+        OrderStats::set(4, now()->subHours(13));
+        OrderStats::increase(4, now()->subHours(8));
+        OrderStats::set(5, now()->subHours(1)); // This set will be used for day 2
+
+        $stats = Stats::for(OrderStats::class)
+            ->start(now()->subDays(2))
+            ->end(now())
+            ->groupByDay()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 3,
+                'increments' => 0,
+                'decrements' => 0,
+                'difference' => 0,
+                'start' => now()->subDays(2),
+                'end' => now()->subDays(1),
+            ],
+            [
+                'value' => 5,
+                'increments' => 4,
+                'decrements' => 2,
+                'difference' => 2,
+                'start' => now()->subDay(),
+                'end' => now()->subDays(0),
+            ]
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
 }
