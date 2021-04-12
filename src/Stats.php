@@ -131,6 +131,10 @@ class Stats
     /**
      * Gets the value at a point in time by using the previous
      * snapshot and the changes since that snapshot.
+     *
+     * @param \DateTimeInterface $dateTime
+     *
+     * @return int
      */
     public function getValue(DateTimeInterface $dateTime): int
     {
@@ -152,18 +156,6 @@ class Stats
         return $startValue + $differenceSinceSet;
     }
 
-    protected function queryStats(): Builder
-    {
-        return StatsEvent::query()
-            ->where('name', $this->statistic->getName());
-    }
-
-    protected function querySnapshots(): Builder
-    {
-        return StatsSnapshot::query()
-            ->where('name', $this->statistic->getName());
-    }
-
     public function generatePeriods(): Collection
     {
         $data = collect();
@@ -182,6 +174,24 @@ class Stats
         return $data;
     }
 
+    public function getPeriodTimestampFormat(): string
+    {
+        return match($this->period) {
+            'year' => 'Y',
+            'month' => 'Y-m',
+            'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'day' => 'Y-m-d',
+            'hour' => 'Y-m-d H',
+            'minute' => 'Y-m-d H:i',
+        };
+    }
+
+    protected function queryStats(): Builder
+    {
+        return StatsEvent::query()
+            ->where('name', $this->statistic->getName());
+    }
+
     protected function getDifferencesPerPeriod()
     {
         return $this->queryStats()
@@ -196,27 +206,17 @@ class Stats
             ->keyBy('period');
     }
 
-    public function getPeriodTimestampFormat(): string
-    {
-        return match($this->period) {
-            'year' => 'Y',
-            'month' => 'Y-m',
-            'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
-            'day' => 'Y-m-d',
-            'hour' => 'Y-m-d H',
-            'minute' => 'Y-m-d H:i',
-        };
-    }
-
     protected function getLatestSetPerPeriod()
     {
         $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
+
         $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
             ->whereType(StatsEvent::TYPE_SET)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->get();
+
         $latestSetPerPeriod = $rankedSets->where('rn', 1);
 
         return $latestSetPerPeriod;
