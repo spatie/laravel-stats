@@ -2,9 +2,9 @@
 
 namespace Spatie\Stats;
 
-use Illuminate\Support\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\Models\StatsSnapshot;
