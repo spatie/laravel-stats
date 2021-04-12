@@ -98,7 +98,6 @@ class Stats
 
         $differencesPerPeriod = $this->getDifferencesPerPeriod();
 
-        // TODO: Fetch all latest sets per period in advance
         $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
         $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
