@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\Stats\Models\StatsEvent;
-use Spatie\Stats\Models\StatsSnapshot;
 
 class Stats
 {
