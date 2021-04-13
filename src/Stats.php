@@ -116,14 +116,14 @@ class Stats
             $value = $startValue + $difference;
             $lastPeriodValue = $value;
 
-            return [
-                'start' => $periodStart,
-                'end' => $periodEnd,
-                'value' => (int) $value,
-                'increments' => (int) ($differencesPerPeriod[$periodKey]['increments'] ?? 0),
-                'decrements' => (int) ($differencesPerPeriod[$periodKey]['decrements'] ?? 0),
-                'difference' => (int) ($differencesPerPeriod[$periodKey]['difference'] ?? 0),
-            ];
+            return new DataPoint(
+                start: $periodStart,
+                end: $periodEnd,
+                value: (int) $value,
+                increments: (int) ($differencesPerPeriod[$periodKey]['increments'] ?? 0),
+                decrements: (int) ($differencesPerPeriod[$periodKey]['decrements'] ?? 0),
+                difference: (int) ($differencesPerPeriod[$periodKey]['difference'] ?? 0),
+            );
         });
     }
 
