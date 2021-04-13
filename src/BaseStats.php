@@ -12,6 +12,11 @@ abstract class BaseStats
         return class_basename($this);
     }
 
+    public static function query(): StatsQuery
+    {
+        return new StatsQuery(static::class);
+    }
+
     public static function increase(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
         $number = is_int($number) ? $number : 1;

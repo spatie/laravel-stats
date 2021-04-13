@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\Stats\Models\StatsEvent;
 
-class Stats
+class StatsQuery
 {
     protected BaseStats $statistic;
 
@@ -183,6 +183,11 @@ class Stats
             'hour' => 'Y-m-d H',
             'minute' => 'Y-m-d H:i',
         };
+    }
+
+    public function getStatistic(): BaseStats
+    {
+        return $this->statistic;
     }
 
     protected function queryStats(): Builder

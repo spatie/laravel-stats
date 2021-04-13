@@ -27,9 +27,9 @@ With this in place, you can query the stats. Here's how you can get the subscrip
 grouped by week.
 
 ```php
-use Spatie\Stats\Stats;
+use Spatie\Stats\StatsQuery;
 
-$stats = Stats::for(SubscriptionStats::class)
+$stats = StatsQuery::for(SubscriptionStats::class)
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()
@@ -142,9 +142,9 @@ Here's how you can get the subscription stats for the past two months,
 grouped by week.
 
 ```php
-use Spatie\Stats\Stats;
+use Spatie\Stats\StatsQuery;
 
-$stats = Stats::for(SubscriptionStats::class)
+$stats = StatsQuery::for(SubscriptionStats::class)
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()
