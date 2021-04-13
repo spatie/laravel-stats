@@ -111,13 +111,13 @@ class SubscriptionStats extends BaseStats
 }
 ```
 
-## Step 2: call increase and decrease
+## Step 2: call increase and decrease or set a fixed value
 
 Next, you can call `increase`, `decrease` when the stat should change.  In this particular case, you should call `increase` on it when somebody subscribes, and `decrease` when somebody cancels their plan.
 
 ```php
 SubscriptionStats::increase(); // execute whenever somebody subscribes
-SubscriptionStats::decrease() // execute whenever somebody cancels the subscription;
+SubscriptionStats::decrease(); // execute whenever somebody cancels the subscription;
 ```
 
 Instead of manually increasing and decreasing the stat, you can directly set it. This is useful when you particular stat does not get calculated by your own app, but lives elsewhere.  Using the subscription example, let's image that subscriptions live elsewhere, and that there's an API call to get the count.
@@ -128,7 +128,7 @@ $count = AnAPi::getSubscriptionCount();
 SubscriptionStats::set($count);
 ```
 
-By default, that `increase`, `decrease` and `sets` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happend on that moment.
+By default, that `increase`, `decrease` and `sets` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happened on that moment.
 
 ```php
 SubscriptionStats::increase(1, $subscription->created_at); 
@@ -142,18 +142,17 @@ Here's how you can get the subscription stats for the past two months,
 grouped by week.
 
 ```php
-use Spatie\Stats\StatsQuery;
-
-$stats = StatsQuery::for(SubscriptionStats::class)
+$stats = SubscriptionStats::query()
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()
     ->get();
 ```
 
-This will return an array like this one:
+This will return an array containing arrayable `Spatie\Stats\DataPoint` objects. These objects can be cast to arrays like this:
 
 ```php 
+// output of $stats->toArray():
 [
     [
         'start' => '2020-01-01',
