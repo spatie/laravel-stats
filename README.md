@@ -81,7 +81,7 @@ composer require spatie/laravel-stats
 You must publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --provider="Spatie\LaravelStatistics\LaravelStatisticsServiceProvider" --tag="stats-migrations"
+php artisan vendor:publish --provider="Spatie\Stats\StatsServiceProvider" --tag="stats-migrations"
 php artisan migrate
 ```
 
