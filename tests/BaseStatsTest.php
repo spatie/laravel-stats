@@ -35,14 +35,14 @@ class BaseStatsTest extends TestCase
         $this->assertCount(53, $periods);
 
         $this->assertEquals([
-            Carbon::parse('2019-01-01'),
-            Carbon::parse('2019-01-08'),
+            Carbon::parse('2018-12-31'),
+            Carbon::parse('2019-01-07'),
             '201901',
         ], $periods[0]);
 
         $this->assertEquals([
-            Carbon::parse('2019-12-31'),
-            Carbon::parse('2020-01-07'),
+            Carbon::parse('2019-12-30'),
+            Carbon::parse('2020-01-06'),
             '202001',
         ], $periods[52]);
     }
@@ -59,7 +59,7 @@ class BaseStatsTest extends TestCase
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
-            ->end(now()->subSecond())
+            ->end(now()->startOfWeek())
             ->groupByWeek()
             ->get();
 
@@ -69,16 +69,16 @@ class BaseStatsTest extends TestCase
                 'increments' => +3,
                 'decrements' => 1,
                 'difference' => 2,
-                'start' => now()->subWeeks(2),
-                'end' => now()->subWeeks(1),
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
             ],
             [
                 'value' => 5,
                 'increments' => +3,
                 'decrements' => 1,
                 'difference' => 2,
-                'start' => now()->subWeeks(1),
-                'end' => now(),
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
             ],
         ];
 
@@ -96,7 +96,7 @@ class BaseStatsTest extends TestCase
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
-            ->end(now()->subSecond())
+            ->end(now()->startOfWeek())
             ->groupByWeek()
             ->get();
 
@@ -106,16 +106,16 @@ class BaseStatsTest extends TestCase
                 'increments' => +3,
                 'decrements' => 1,
                 'difference' => 2,
-                'start' => now()->subWeeks(2),
-                'end' => now()->subWeeks(1),
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
             ],
             [
                 'value' => 104,
                 'increments' => +3,
                 'decrements' => 1,
                 'difference' => 2,
-                'start' => now()->subWeeks(1),
-                'end' => now(),
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
             ],
         ];
 
@@ -129,7 +129,7 @@ class BaseStatsTest extends TestCase
 
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
-            ->end(now()->subSecond())
+            ->end(now()->startOfWeek())
             ->groupByWeek()
             ->get();
 
@@ -139,16 +139,16 @@ class BaseStatsTest extends TestCase
                 'increments' => +3,
                 'decrements' => 0,
                 'difference' => 3,
-                'start' => now()->subWeeks(2),
-                'end' => now()->subWeeks(1),
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
             ],
             [
                 'value' => 3,
                 'increments' => 0,
                 'decrements' => 0,
                 'difference' => 0,
-                'start' => now()->subWeeks(1),
-                'end' => now(),
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
             ],
         ];
 
@@ -160,7 +160,7 @@ class BaseStatsTest extends TestCase
     {
         $stats = Stats::for(OrderStats::class)
             ->start(now()->subWeeks(2))
-            ->end(now()->subSecond())
+            ->end(now()->startOfWeek())
             ->groupByWeek()
             ->get();
 
@@ -170,16 +170,16 @@ class BaseStatsTest extends TestCase
                 'increments' => 0,
                 'decrements' => 0,
                 'difference' => 0,
-                'start' => now()->subWeeks(2),
-                'end' => now()->subWeeks(1),
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
             ],
             [
                 'value' => 0,
                 'increments' => 0,
                 'decrements' => 0,
                 'difference' => 0,
-                'start' => now()->subWeeks(1),
-                'end' => now(),
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
             ],
         ];
 

@@ -158,7 +158,7 @@ class Stats
     public function generatePeriods(): Collection
     {
         $data = collect();
-        $currentDateTime = new Carbon($this->start);
+        $currentDateTime = (new Carbon($this->start))->startOf($this->period);
 
         do {
             $data->push([
