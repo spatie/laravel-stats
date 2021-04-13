@@ -4,6 +4,7 @@ namespace Spatie\Stats;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\Stats\Models\StatsEvent;
@@ -197,7 +198,7 @@ class StatsQuery
             ->where('name', $this->statistic->getName());
     }
 
-    protected function getDifferencesPerPeriod()
+    protected function getDifferencesPerPeriod(): EloquentCollection
     {
         return $this->queryStats()
             ->whereType(StatsEvent::TYPE_CHANGE)
@@ -211,7 +212,7 @@ class StatsQuery
             ->keyBy('period');
     }
 
-    protected function getLatestSetPerPeriod()
+    protected function getLatestSetPerPeriod(): EloquentCollection
     {
         $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
 

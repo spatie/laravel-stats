@@ -16,7 +16,7 @@ class StatsEvent extends Model
 
     protected $guarded = [];
 
-    public function scopeGroupByPeriod(Builder $query, string $period)
+    public function scopeGroupByPeriod(Builder $query, string $period): void
     {
         $periodGroupBy = static::getPeriodDateFormat($period);
 
@@ -35,12 +35,12 @@ class StatsEvent extends Model
         };
     }
 
-    public function scopeIncrements(Builder $query)
+    public function scopeIncrements(Builder $query): void
     {
         $query->where('value', '>', 0);
     }
 
-    public function scopeDecrements(Builder $query)
+    public function scopeDecrements(Builder $query): void
     {
         $query->where('value', '<', 0);
     }
