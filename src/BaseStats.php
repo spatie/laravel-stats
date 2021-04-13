@@ -12,15 +12,19 @@ abstract class BaseStats
         return class_basename($this);
     }
 
-    public static function increase(int $number = 1, ?DateTimeInterface $timestamp = null)
+    public static function increase(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
+        $number = is_int($number) ? $number : 1;
+
         $stats = new static;
 
         $stats->createEvent(StatsEvent::TYPE_CHANGE, $number, $timestamp);
     }
 
-    public static function decrease(int $number = 1, ?DateTimeInterface $timestamp = null)
+    public static function decrease(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
+        $number = is_int($number) ? $number : 1;
+
         $stats = new static;
 
         $stats->createEvent(StatsEvent::TYPE_CHANGE, -$number, $timestamp);
