@@ -20,7 +20,7 @@ class BaseStatsTest extends TestCase
     {
         $stats = new OrderStats();
 
-        $stats->increase(1);
+        $stats->increase();
 
         $this->assertDatabaseHas('stats_events', [
             'name' => 'OrderStats',
