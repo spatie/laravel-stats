@@ -3,7 +3,7 @@
 # Track application stat changes over time
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-stats.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-stats)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/spatie/laravel-stats/run-tests?label=tests)](https://github.com/spatie/laravel-stats/actions?query=workflow%3Arun-tests+branch%3Amaster)
+[![Tests](https://github.com/spatie/laravel-stats/actions/workflows/run-tests.yml/badge.svg)](https://github.com/spatie/laravel-stats/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-stats.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-stats)
 
 This package is a lightweight solution to summarize changes in your database over time. Here's a quick example where we are going to track the number of subscriptions and cancellations over time.
