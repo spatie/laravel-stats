@@ -83,6 +83,7 @@ class StatsQuery
         return $this;
     }
 
+    /** @return \Illuminate\Support\Collection|\Spatie\Stats\DataPoint[] */
     public function get(): Collection
     {
         $periods = $this->generatePeriods();
