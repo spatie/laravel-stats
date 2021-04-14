@@ -1,5 +1,3 @@
-**THIS PACKAGE IS IN DEVELOPMENT, DO NOT USE YET**
-
 # Track application stat changes over time
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-stats.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-stats)
