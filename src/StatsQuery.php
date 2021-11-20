@@ -177,7 +177,7 @@ class StatsQuery
 
     public function getPeriodTimestampFormat(): string
     {
-        return match($this->period) {
+        return match ($this->period) {
             'year' => 'Y',
             'month' => 'Y-m',
             'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow

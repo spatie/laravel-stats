@@ -25,7 +25,7 @@ class StatsEvent extends Model
 
     public static function getPeriodDateFormat(string $period): string
     {
-        return match($period) {
+        return match ($period) {
             'year' => "date_format(created_at,'%Y')",
             'month' => "date_format(created_at,'%Y-%m')",
             'week' => "yearweek(created_at, 3)", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
