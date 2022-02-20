@@ -5,7 +5,6 @@ namespace Spatie\Stats;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Spatie\Stats\Models\StatsEvent;
 
 class StatsWriter
 {
@@ -40,7 +39,7 @@ class StatsWriter
         $this->createEvent(DataPoint::TYPE_SET, $value, $attributes, $timestamp);
     }
 
-    protected function createEvent($type, $value, array $attributes = [], ?DateTimeInterface $timestamp = null): StatsEvent
+    protected function createEvent($type, $value, array $attributes = [], ?DateTimeInterface $timestamp = null): Model
     {
         if ($this->subject instanceof Relation) {
             return $this->subject->create(array_merge($attributes, [
