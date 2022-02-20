@@ -5,13 +5,14 @@ namespace Spatie\Stats;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Spatie\Stats\Models\StatsEvent;
 
 class StatsQuery
 {
-    protected BaseStats $statistic;
+    private Model|Relation|string $statistic;
 
     protected string $period;
 
@@ -19,9 +20,9 @@ class StatsQuery
 
     protected DateTimeInterface $end;
 
-    public function __construct(string $statistic)
+    public function __construct(Model|Relation|string $statistic)
     {
-        $this->statistic = new $statistic();
+        $this->statistic = $statistic;
 
         $this->period = 'week';
 
@@ -30,7 +31,7 @@ class StatsQuery
         $this->end = now();
     }
 
-    public static function for(string $statistic): self
+    public static function for(Model|Relation|string $statistic): self
     {
         return new self($statistic);
     }
@@ -103,7 +104,7 @@ class StatsQuery
         $periods = $this->generatePeriods();
 
         $changes = $this->queryStats()
-            ->whereType(DataPoint::TYPE_CHANGE)
+            ->where('type', DataPoint::TYPE_CHANGE)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->get();
@@ -163,7 +164,7 @@ class StatsQuery
 
         $differenceSinceSet = $this->queryStats()
             ->where('type', DataPoint::TYPE_CHANGE)
-            ->where('id', '>', $startId)
+            ->where($this->getStatsKey(), '>', $startId)
             ->where('created_at', '<', $dateTime)
             ->sum('value');
 
@@ -200,21 +201,25 @@ class StatsQuery
         };
     }
 
-    public function getStatistic(): BaseStats
-    {
-        return $this->statistic;
-    }
-
     protected function queryStats(): Builder
     {
-        return StatsEvent::query()
-            ->where('name', $this->statistic->getName());
+        if ($this->statistic instanceof Relation) {
+            return $this->statistic->getQuery()->clone();
+        }
+
+        /** @var Model $subject */
+        $subject = $this->statistic;
+        if (is_string($subject) && class_exists($subject)) {
+            $subject = new $subject;
+        }
+
+        return $subject->newQuery();
     }
 
     protected function getDifferencesPerPeriod(): EloquentCollection
     {
         return $this->queryStats()
-            ->whereType(DataPoint::TYPE_CHANGE)
+            ->where('type', DataPoint::TYPE_CHANGE)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->selectRaw('sum(case when value > 0 then value else 0 end) as increments')
@@ -229,9 +234,12 @@ class StatsQuery
     {
         $periodDateFormat = static::getPeriodDateFormat($this->period);
 
+        $statsTable = $this->getStatsTableName();
+        $statsKey = $this->getStatsKey();
+
         $rankedSets = $this->queryStats()
-            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
-            ->whereType(DataPoint::TYPE_SET)
+            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `{$statsKey}` DESC) AS rn, `{$statsTable}`.*, {$periodDateFormat} as period")
+            ->where('type', DataPoint::TYPE_SET)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->get();
@@ -239,5 +247,35 @@ class StatsQuery
         $latestSetPerPeriod = $rankedSets->where('rn', 1);
 
         return $latestSetPerPeriod;
+    }
+
+    protected function getStatsKey(): string
+    {
+        if ($this->statistic instanceof Relation) {
+            return $this->statistic->getRelated()->getKeyName();
+        }
+
+        /** @var Model $subject */
+        $subject = $this->statistic;
+        if (is_string($subject) && class_exists($subject)) {
+            $subject = new $subject;
+        }
+
+        return $subject->getKeyName();
+    }
+
+    protected function getStatsTableName(): string
+    {
+        if ($this->statistic instanceof Relation) {
+            return $this->statistic->getRelated()->getTable();
+        }
+
+        /** @var Model $subject */
+        $subject = $this->statistic;
+        if (is_string($subject) && class_exists($subject)) {
+            $subject = new $subject;
+        }
+
+        return $subject->getTable();
     }
 }

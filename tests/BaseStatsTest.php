@@ -102,26 +102,26 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_get_a_stats_query_object()
-    {
-        $query = OrderStats::query();
+//    /** @test */
+//    public function it_can_get_a_stats_query_object()
+//    {
+//        $query = OrderStats::query();
+//
+//        $this->assertInstanceOf(StatsQuery::class, $query);
+//        $this->assertInstanceOf(OrderStats::class, $query->getStatistic());
+//    }
 
-        $this->assertInstanceOf(StatsQuery::class, $query);
-        $this->assertInstanceOf(OrderStats::class, $query->getStatistic());
-    }
-
-    /** @test */
-    public function it_can_get_the_value_at_a_given_time()
-    {
-        OrderStats::set(3, now()->subDays(19));
-        OrderStats::decrease(1, now()->subDays(4));
-        OrderStats::increase(3, now()->subDays(2));
-
-        $this->assertEquals(0, StatsQuery::for(OrderStats::class)->getValue(now()->subDays(30)));
-        $this->assertEquals(3, StatsQuery::for(OrderStats::class)->getValue(now()->subDays(18)));
-        $this->assertEquals(5, StatsQuery::for(OrderStats::class)->getValue(now()));
-    }
+//    /** @test */
+//    public function it_can_get_the_value_at_a_given_time()
+//    {
+//        OrderStats::set(3, now()->subDays(19));
+//        OrderStats::decrease(1, now()->subDays(4));
+//        OrderStats::increase(3, now()->subDays(2));
+//
+//        $this->assertEquals(0, StatsQuery::for(OrderStats::class)->getValue(now()->subDays(30)));
+//        $this->assertEquals(3, StatsQuery::for(OrderStats::class)->getValue(now()->subDays(18)));
+//        $this->assertEquals(5, StatsQuery::for(OrderStats::class)->getValue(now()));
+//    }
 
     /** @test */
     public function it_can_generate_and_array_of_periods()
