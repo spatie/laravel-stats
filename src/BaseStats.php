@@ -23,7 +23,7 @@ abstract class BaseStats
 
         $stats = new static;
 
-        $stats->createEvent(StatsEvent::TYPE_CHANGE, $number, $timestamp);
+        $stats->createEvent(DataPoint::TYPE_CHANGE, $number, $timestamp);
     }
 
     public static function decrease(mixed $number = 1, ?DateTimeInterface $timestamp = null)
@@ -32,14 +32,14 @@ abstract class BaseStats
 
         $stats = new static;
 
-        $stats->createEvent(StatsEvent::TYPE_CHANGE, -$number, $timestamp);
+        $stats->createEvent(DataPoint::TYPE_CHANGE, -$number, $timestamp);
     }
 
     public static function set(int $value, ?DateTimeInterface $timestamp = null)
     {
         $stats = new static;
 
-        $stats->createEvent(StatsEvent::TYPE_SET, $value, $timestamp);
+        $stats->createEvent(DataPoint::TYPE_SET, $value, $timestamp);
     }
 
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent

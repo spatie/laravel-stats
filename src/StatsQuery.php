@@ -103,7 +103,7 @@ class StatsQuery
         $periods = $this->generatePeriods();
 
         $changes = $this->queryStats()
-            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->whereType(DataPoint::TYPE_CHANGE)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->get();
@@ -153,7 +153,7 @@ class StatsQuery
     public function getValue(DateTimeInterface $dateTime): int
     {
         $nearestSet = $this->queryStats()
-            ->where('type', StatsEvent::TYPE_SET)
+            ->where('type', DataPoint::TYPE_SET)
             ->where('created_at', '<', $dateTime)
             ->orderByDesc('created_at')
             ->first();
@@ -162,7 +162,7 @@ class StatsQuery
         $startValue = optional($nearestSet)->value ?? 0;
 
         $differenceSinceSet = $this->queryStats()
-            ->where('type', StatsEvent::TYPE_CHANGE)
+            ->where('type', DataPoint::TYPE_CHANGE)
             ->where('id', '>', $startId)
             ->where('created_at', '<', $dateTime)
             ->sum('value');
@@ -214,7 +214,7 @@ class StatsQuery
     protected function getDifferencesPerPeriod(): EloquentCollection
     {
         return $this->queryStats()
-            ->whereType(StatsEvent::TYPE_CHANGE)
+            ->whereType(DataPoint::TYPE_CHANGE)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->selectRaw('sum(case when value > 0 then value else 0 end) as increments')
@@ -231,7 +231,7 @@ class StatsQuery
 
         $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
-            ->whereType(StatsEvent::TYPE_SET)
+            ->whereType(DataPoint::TYPE_SET)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
             ->get();
