@@ -203,9 +203,9 @@ $stats = StatsQuery::for(MyCustomModel::class, ['additional_column' => '123'])
 ```php
 $tenant = Tenant::find(1) 
 
-StatsWriter::for($tenant->orderStats())->increment()
+StatsWriter::for($tenant->orderStats())->increment(1, ['additional_column' => 'recurring'])
 
-$stats = StatsQuery::for($tenant->orderStats())
+$stats = StatsQuery::for($tenant->orderStats(), ['additional_column' => 'recurring'])
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()

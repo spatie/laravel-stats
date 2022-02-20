@@ -213,7 +213,7 @@ class StatsQuery
     protected function queryStats(): Builder
     {
         if ($this->subject instanceof Relation) {
-            return $this->subject->getQuery()->clone();
+            return $this->subject->getQuery()->clone()->where($this->attributes);
         }
 
         /** @var Model $subject */

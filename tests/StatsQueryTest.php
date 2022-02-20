@@ -285,6 +285,61 @@ class StatsQueryTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_stats_by_attributes()
+    {
+        StatsWriter::for(StatsEvent::class)->increase(1, ['name' => 'one-off'], now()->hour(12));
+        StatsWriter::for(StatsEvent::class)->increase(1, ['name' => 'recurring'], now()->hour(12));
+
+        $stats = StatsQuery::for(StatsEvent::class, ['name' => 'recurring'])
+            ->start(now()->startOfDay())
+            ->end(now()->endOfDay())
+            ->groupByDay()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 1,
+                'increments' => 1,
+                'decrements' => 0,
+                'difference' => 1,
+                'start' => now()->startOfDay(),
+                'end' => now()->endOfDay()->addMicro(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_by_attributes_for_has_many_relationship()
+    {
+        /** @var Stat $stat */
+        $stat = Stat::create();
+
+        StatsWriter::for($stat->events())->increase(1, ['name' => 'one-off'], now()->hour(12));
+        StatsWriter::for($stat->events())->increase(1, ['name' => 'recurring'], now()->hour(12));
+
+        $stats = StatsQuery::for($stat->events(), ['name' => 'recurring'])
+            ->start(now()->startOfDay())
+            ->end(now()->endOfDay())
+            ->groupByDay()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 1,
+                'increments' => 1,
+                'decrements' => 0,
+                'difference' => 1,
+                'start' => now()->startOfDay(),
+                'end' => now()->endOfDay()->addMicro(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
     public function it_can_get_stats_grouped_by_day()
     {
         StatsWriter::for(StatsEvent::class)->set(3, [], now()->subDays(6));

@@ -75,6 +75,22 @@ class StatsWriterTest extends TestCase
     }
 
     /** @test */
+    public function it_can_create_events_for_has_many_relationships_with_custom_attributes()
+    {
+        /** @var Stat $stats */
+        $stats = Stat::create();
+
+        StatsWriter::for($stats->events())->increase(1, ['name' => 'recurring']);
+
+        $this->assertDatabaseHas('stats_events', [
+            'stat_id' => $stats->getKey(),
+            'name' => 'recurring',
+            'value' => 1,
+            'type' => 'change',
+        ]);
+    }
+
+    /** @test */
     public function it_can_create_events_with_custom_attributes()
     {
         StatsWriter::for(new StatsEvent())->increase(1, ['name' => 'OrderStats']);
