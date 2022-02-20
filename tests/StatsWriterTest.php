@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Spatie\Stats\Models\Stat;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsWriter;
+use Spatie\Stats\Tests\Stats\CustomerStats;
+use Spatie\Stats\Tests\Stats\OrderStats;
 
 class StatsWriterTest extends TestCase
 {
@@ -14,6 +16,25 @@ class StatsWriterTest extends TestCase
         parent::setUp();
 
         Carbon::setTestNow('2020-01-01');
+    }
+
+    /** @test */
+    public function it_can_write_with_base_stats_extensions()
+    {
+        CustomerStats::increase();
+        OrderStats::increase();
+
+        $this->assertDatabaseHas('stats_events', [
+            'name' => 'CustomerStats',
+            'value' => 1,
+            'type' => 'change',
+        ]);
+
+        $this->assertDatabaseHas('stats_events', [
+            'name' => 'OrderStats',
+            'value' => 1,
+            'type' => 'change',
+        ]);
     }
 
     /** @test */

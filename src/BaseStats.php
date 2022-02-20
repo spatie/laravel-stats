@@ -14,41 +14,29 @@ abstract class BaseStats
 
     public static function query(): StatsQuery
     {
-        return new StatsQuery(static::class);
+        return StatsQuery::for(StatsEvent::class, [
+            'name' => (new static)->getName(),
+        ]);
     }
 
     public static function increase(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $number = is_int($number) ? $number : 1;
+        $model = new static();
 
-        $stats = new static;
-
-        $stats->createEvent(DataPoint::TYPE_CHANGE, $number, $timestamp);
+        StatsWriter::for(StatsEvent::class)->increase($number, ['name' => $model->getName()], $timestamp);
     }
 
     public static function decrease(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $number = is_int($number) ? $number : 1;
+        $model = new static();
 
-        $stats = new static;
-
-        $stats->createEvent(DataPoint::TYPE_CHANGE, -$number, $timestamp);
+        StatsWriter::for(StatsEvent::class)->decrease($number, ['name' => $model->getName()], $timestamp);
     }
 
     public static function set(int $value, ?DateTimeInterface $timestamp = null)
     {
-        $stats = new static;
+        $model = new static();
 
-        $stats->createEvent(DataPoint::TYPE_SET, $value, $timestamp);
-    }
-
-    protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): StatsEvent
-    {
-        return StatsEvent::create([
-            'name' => $this->getName(),
-            'type' => $type,
-            'value' => $value,
-            'created_at' => $timestamp ?? now(),
-        ]);
+        StatsWriter::for(StatsEvent::class)->set($value, ['name' => $model->getName()], $timestamp);
     }
 }

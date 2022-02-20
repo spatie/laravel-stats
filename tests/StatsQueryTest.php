@@ -7,6 +7,8 @@ use Spatie\Stats\Models\Stat;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsQuery;
 use Spatie\Stats\StatsWriter;
+use Spatie\Stats\Tests\Stats\CustomerStats;
+use Spatie\Stats\Tests\Stats\OrderStats;
 
 class StatsQueryTest extends TestCase
 {
@@ -15,6 +17,52 @@ class StatsQueryTest extends TestCase
         parent::setUp();
 
         Carbon::setTestNow('2020-01-01');
+    }
+
+    /** @test */
+    public function it_can_get_stats_for_base_stats_class()
+    {
+        // adding customer stats, to proof name is correctly set
+        CustomerStats::set(3, now()->subMonth());
+        CustomerStats::decrease(1, now()->subDays(13));
+        CustomerStats::increase(3, now()->subDays(12));
+        CustomerStats::set(3, now()->subDays(6));
+        CustomerStats::decrease(1, now()->subDays(5));
+        CustomerStats::increase(3, now()->subDays(4));
+
+        OrderStats::set(3, now()->subMonth());
+        OrderStats::decrease(1, now()->subDays(13));
+        OrderStats::increase(3, now()->subDays(12));
+        OrderStats::set(3, now()->subDays(6));
+        OrderStats::decrease(1, now()->subDays(5));
+        OrderStats::increase(3, now()->subDays(4));
+
+        $stats = OrderStats::query()
+            ->start(now()->subWeeks(2))
+            ->end(now()->startOfWeek())
+            ->groupByWeek()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
+            ],
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
     }
 
     /** @test */

@@ -12,7 +12,9 @@ use Illuminate\Support\Collection;
 
 class StatsQuery
 {
-    private Model|Relation|string $statistic;
+    private Model|Relation|string $subject;
+
+    private array $attributes = [];
 
     protected string $period;
 
@@ -20,9 +22,11 @@ class StatsQuery
 
     protected DateTimeInterface $end;
 
-    public function __construct(Model|Relation|string $statistic)
+    public function __construct(Model|Relation|string $subject, array $attributes = [])
     {
-        $this->statistic = $statistic;
+        $this->subject = $subject;
+
+        $this->attributes = $attributes;
 
         $this->period = 'week';
 
@@ -31,9 +35,9 @@ class StatsQuery
         $this->end = now();
     }
 
-    public static function for(Model|Relation|string $statistic): self
+    public static function for(Model|Relation|string $subject, array $attributes = []): self
     {
-        return new self($statistic);
+        return new self($subject, $attributes);
     }
 
     public static function getPeriodDateFormat(string $period): string
@@ -201,19 +205,24 @@ class StatsQuery
         };
     }
 
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
     protected function queryStats(): Builder
     {
-        if ($this->statistic instanceof Relation) {
-            return $this->statistic->getQuery()->clone();
+        if ($this->subject instanceof Relation) {
+            return $this->subject->getQuery()->clone();
         }
 
         /** @var Model $subject */
-        $subject = $this->statistic;
+        $subject = $this->subject;
         if (is_string($subject) && class_exists($subject)) {
             $subject = new $subject;
         }
 
-        return $subject->newQuery();
+        return $subject->newQuery()->where($this->attributes);
     }
 
     protected function getDifferencesPerPeriod(): EloquentCollection
@@ -251,12 +260,12 @@ class StatsQuery
 
     protected function getStatsKey(): string
     {
-        if ($this->statistic instanceof Relation) {
-            return $this->statistic->getRelated()->getKeyName();
+        if ($this->subject instanceof Relation) {
+            return $this->subject->getRelated()->getKeyName();
         }
 
         /** @var Model $subject */
-        $subject = $this->statistic;
+        $subject = $this->subject;
         if (is_string($subject) && class_exists($subject)) {
             $subject = new $subject;
         }
@@ -266,12 +275,12 @@ class StatsQuery
 
     protected function getStatsTableName(): string
     {
-        if ($this->statistic instanceof Relation) {
-            return $this->statistic->getRelated()->getTable();
+        if ($this->subject instanceof Relation) {
+            return $this->subject->getRelated()->getTable();
         }
 
         /** @var Model $subject */
-        $subject = $this->statistic;
+        $subject = $this->subject;
         if (is_string($subject) && class_exists($subject)) {
             $subject = new $subject;
         }
