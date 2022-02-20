@@ -27,7 +27,7 @@ grouped by week.
 ```php
 use Spatie\Stats\StatsQuery;
 
-$stats = StatsQuery::for(SubscriptionStats::class)
+$stats = SubscriptionStats::query()
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()
@@ -169,6 +169,47 @@ This will return an array containing arrayable `Spatie\Stats\DataPoint` objects.
         'difference' => 33,
     ],
 ]
+```
+
+## Extended Use-Cases
+
+### Read and Write from a custom Model
+
+* Create a new table with `type (string)`, `value (bigInt)`, `created_at`, `updated_at` fields
+* Create a model and add `HasStats`-trait 
+
+```php
+StatsWriter::for(MyCustomModel::class)->set(123)
+StatsWriter::for(MyCustomModel::class)->increment(1, ['additional_column' => '123'])
+StatsWriter::for(MyCustomModel::class)->decrement(1, ['additional_column' => '123'], now()->subDay())
+
+$stats = StatsQuery::for(MyCustomModel::class)
+    ->start(now()->subMonths(2))
+    ->end(now()->subSecond())
+    ->groupByWeek()
+    ->get();
+    
+// OR
+
+$stats = StatsQuery::for(MyCustomModel::class, ['additional_column' => '123'])
+    ->start(now()->subMonths(2))
+    ->end(now()->subSecond())
+    ->groupByWeek()
+    ->get(); 
+```
+
+### Read and Write from a HasMany-Relationship 
+
+```php
+$tenant = Tenant::find(1) 
+
+StatsWriter::for($tenant->orderStats())->increment()
+
+$stats = StatsQuery::for($tenant->orderStats())
+    ->start(now()->subMonths(2))
+    ->end(now()->subSecond())
+    ->groupByWeek()
+    ->get();
 ```
 
 ## Testing
