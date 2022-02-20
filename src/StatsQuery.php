@@ -35,6 +35,19 @@ class StatsQuery
         return new self($statistic);
     }
 
+    public static function getPeriodDateFormat(string $period): string
+    {
+        return match ($period) {
+            'year' => "date_format(created_at,'%Y')",
+            'month' => "date_format(created_at,'%Y-%m')",
+            'week' => "yearweek(created_at, 3)", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'day' => "date_format(created_at,'%Y-%m-%d')",
+            'hour' => "date_format(created_at,'%Y-%m-%d %H')",
+            'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
+        };
+    }
+
+
     public function groupByYear(): self
     {
         $this->period = 'year';
@@ -84,7 +97,7 @@ class StatsQuery
         return $this;
     }
 
-    /** @return \Illuminate\Support\Collection|\Spatie\Stats\DataPoint[] */
+    /** @return Collection|DataPoint[] */
     public function get(): Collection
     {
         $periods = $this->generatePeriods();
@@ -133,7 +146,7 @@ class StatsQuery
      * Gets the value at a point in time by using the previous
      * snapshot and the changes since that snapshot.
      *
-     * @param \DateTimeInterface $dateTime
+     * @param DateTimeInterface $dateTime
      *
      * @return int
      */
@@ -214,7 +227,7 @@ class StatsQuery
 
     protected function getLatestSetPerPeriod(): EloquentCollection
     {
-        $periodDateFormat = StatsEvent::getPeriodDateFormat($this->period);
+        $periodDateFormat = static::getPeriodDateFormat($this->period);
 
         $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `id` DESC) AS rn, `stats_events`.*, {$periodDateFormat} as period")
