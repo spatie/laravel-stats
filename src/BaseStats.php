@@ -23,20 +23,20 @@ abstract class BaseStats
     {
         $model = new static();
 
-        StatsWriter::for(StatsEvent::class)->increase($number, ['name' => $model->getName()], $timestamp);
+        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->increase($number, $timestamp);
     }
 
     public static function decrease(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
         $model = new static();
 
-        StatsWriter::for(StatsEvent::class)->decrease($number, ['name' => $model->getName()], $timestamp);
+        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->decrease($number, $timestamp);
     }
 
     public static function set(int $value, ?DateTimeInterface $timestamp = null)
     {
         $model = new static();
 
-        StatsWriter::for(StatsEvent::class)->set($value, ['name' => $model->getName()], $timestamp);
+        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->set($value, $timestamp);
     }
 }

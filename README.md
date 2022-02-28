@@ -180,8 +180,8 @@ This will return an array containing arrayable `Spatie\Stats\DataPoint` objects.
 
 ```php
 StatsWriter::for(MyCustomModel::class)->set(123)
-StatsWriter::for(MyCustomModel::class)->increment(1, ['additional_column' => '123'])
-StatsWriter::for(MyCustomModel::class)->decrement(1, ['additional_column' => '123'], now()->subDay())
+StatsWriter::for(MyCustomModel::class, ['custom_column' => '123'])->increment(1)
+StatsWriter::for(MyCustomModel::class, ['another_column' => '234'])->decrement(1, now()->subDay())
 
 $stats = StatsQuery::for(MyCustomModel::class)
     ->start(now()->subMonths(2))
@@ -203,9 +203,9 @@ $stats = StatsQuery::for(MyCustomModel::class, ['additional_column' => '123'])
 ```php
 $tenant = Tenant::find(1) 
 
-StatsWriter::for($tenant->orderStats())->increment(1, ['additional_column' => 'recurring'])
+StatsWriter::for($tenant->orderStats(), ['payment_type_column' => 'recurring'])->increment(1)
 
-$stats = StatsQuery::for($tenant->orderStats(), ['additional_column' => 'recurring'])
+$stats = StatsQuery::for($tenant->orderStats(), , ['payment_type_column' => 'recurring'])
     ->start(now()->subMonths(2))
     ->end(now()->subSecond())
     ->groupByWeek()

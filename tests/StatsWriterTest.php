@@ -80,7 +80,7 @@ class StatsWriterTest extends TestCase
         /** @var Stat $stats */
         $stats = Stat::create();
 
-        StatsWriter::for($stats->events())->increase(1, ['name' => 'recurring']);
+        StatsWriter::for($stats->events(), ['name' => 'recurring'])->increase(1);
 
         $this->assertDatabaseHas('stats_events', [
             'stat_id' => $stats->getKey(),
@@ -93,7 +93,7 @@ class StatsWriterTest extends TestCase
     /** @test */
     public function it_can_create_events_with_custom_attributes()
     {
-        StatsWriter::for(new StatsEvent())->increase(1, ['name' => 'OrderStats']);
+        StatsWriter::for(new StatsEvent(), ['name' => 'OrderStats'])->increase(1);
 
         $this->assertDatabaseHas('stats_events', [
             'name' => 'OrderStats',
@@ -105,7 +105,7 @@ class StatsWriterTest extends TestCase
     /** @test */
     public function it_can_create_events_for_increments_at_a_given_timestamp()
     {
-        StatsWriter::for(StatsEvent::class)->increase(1, [], now()->subWeek());
+        StatsWriter::for(StatsEvent::class)->increase(1, now()->subWeek());
 
         $this->assertDatabaseHas('stats_events', [
             'value' => 1,
@@ -139,7 +139,7 @@ class StatsWriterTest extends TestCase
     /** @test */
     public function it_can_create_events_for_decrements_at_a_given_timestamp()
     {
-        StatsWriter::for(StatsEvent::class)->decrease(1, [], now()->subWeek());
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subWeek());
 
         $this->assertDatabaseHas('stats_events', [
             'value' => -1,
@@ -162,7 +162,7 @@ class StatsWriterTest extends TestCase
     /** @test */
     public function it_can_create_events_for_setting_fixed_values_at_a_given_timestamp()
     {
-        StatsWriter::for(StatsEvent::class)->set(1337, [], now()->subWeek());
+        StatsWriter::for(StatsEvent::class)->set(1337, now()->subWeek());
 
         $this->assertDatabaseHas('stats_events', [
             'value' => 1337,
