@@ -4,6 +4,7 @@ namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
 use Spatie\Stats\StatsQuery;
+use Spatie\Stats\StatsWriter;
 use Spatie\Stats\Tests\Stats\OrderStats;
 
 class BaseStatsTest extends TestCase
@@ -109,6 +110,15 @@ class BaseStatsTest extends TestCase
 
         $this->assertInstanceOf(StatsQuery::class, $query);
         $this->assertSame(['name' => 'OrderStats'], $query->getAttributes());
+    }
+
+    /** @test */
+    public function it_can_get_a_stats_writer_object()
+    {
+        $writer = OrderStats::writer();
+
+        $this->assertInstanceOf(StatsWriter::class, $writer);
+        $this->assertSame(['name' => 'OrderStats'], $writer->getAttributes());
     }
 
     /** @test */

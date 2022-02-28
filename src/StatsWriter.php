@@ -41,6 +41,11 @@ class StatsWriter
         $this->createEvent(DataPoint::TYPE_SET, $value, $timestamp);
     }
 
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
     protected function createEvent($type, $value, ?DateTimeInterface $timestamp = null): Model
     {
         if ($this->subject instanceof Relation) {

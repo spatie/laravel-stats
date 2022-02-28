@@ -12,6 +12,7 @@ All notable changes to `laravel-stats` will be documented in this file
 - Added `StatsWriter` with custom-attribute support (`StatsWriter::for(MyModel::class, ['custom_column' => 'orders])`)
 - Extended `StatsQuery` with relationship-support (`StatsQuery::for($model->relationship())`)
 - Extended `StatsQuery` with additional attributes (`StatsQuery::for(StatsEvent::class, ['name' => 'OrderStats'])`)
+- Extended `BaseStats` with direct writer access (`OrderStats::writer()` as addition to `OrderStats::query()`)
 
 ### BC breaks
 

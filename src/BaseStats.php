@@ -19,24 +19,25 @@ abstract class BaseStats
         ]);
     }
 
+    public static function writer(): StatsWriter
+    {
+        return StatsWriter::for(StatsEvent::class, [
+            'name' => (new static)->getName(),
+        ]);
+    }
+
     public static function increase(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $model = new static();
-
-        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->increase($number, $timestamp);
+        static::writer()->increase($number, $timestamp);
     }
 
     public static function decrease(mixed $number = 1, ?DateTimeInterface $timestamp = null)
     {
-        $model = new static();
-
-        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->decrease($number, $timestamp);
+        static::writer()->decrease($number, $timestamp);
     }
 
     public static function set(int $value, ?DateTimeInterface $timestamp = null)
     {
-        $model = new static();
-
-        StatsWriter::for(StatsEvent::class, ['name' => $model->getName()])->set($value, $timestamp);
+        static::writer()->set($value, $timestamp);
     }
 }
