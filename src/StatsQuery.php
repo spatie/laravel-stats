@@ -175,7 +175,7 @@ class StatsQuery
         return $startValue + $differenceSinceSet;
     }
 
-    public function generatePeriods(): Collection
+    protected function generatePeriods(): Collection
     {
         $data = collect();
         $currentDateTime = (new Carbon($this->start))->startOf($this->period);

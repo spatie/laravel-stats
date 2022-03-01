@@ -14,12 +14,13 @@ All notable changes to `laravel-stats` will be documented in this file
 - Extended `StatsQuery` with additional attributes (`StatsQuery::for(StatsEvent::class, ['name' => 'OrderStats'])`)
 - Extended `BaseStats` with direct writer access (`OrderStats::writer()` as addition to `OrderStats::query()`)
 
-### BC breaks
+### Changed (breaks BC)
 
-- Replaced `StatsQuery::for($model)->getStatistic()` with `StatsQuery::for($model)->getAttributes()` 
+- Changed visibility of `StatsQuery::for($model)->generatePeriods()` from `public` to `protected`
+- Replaced `StatsQuery::for($model)->getStatistic()` with `StatsQuery::for($model)->getAttributes()`
 - Removed `BaseStats->createEvent()` 
 
-Migrations:
+### Migrations
 
 - Replace `StatsQuery::for(OrderStats::class)` with `OrderStats::query()`
 - Replace `StatsEvent::TYPE_SET` use `DataPoint::TYPE_SET` instead
