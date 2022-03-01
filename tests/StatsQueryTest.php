@@ -20,6 +20,15 @@ class StatsQueryTest extends TestCase
     }
 
     /** @test */
+    public function it_can_pass_and_receive_attributes()
+    {
+        $query = StatsQuery::for(StatsEvent::class, ['custom_attribute' => 'custom_value']);
+
+        $this->assertInstanceOf(StatsQuery::class, $query);
+        $this->assertSame(['custom_attribute' => 'custom_value'], $query->getAttributes());
+    }
+
+    /** @test */
     public function it_can_get_stats_for_base_stats_class()
     {
         // adding customer stats, to proof name is correctly set

@@ -171,14 +171,14 @@ class StatsWriterTest extends TestCase
         ]);
     }
 
-//    /** @test */
-//    public function it_can_get_a_stats_query_object()
-//    {
-//        $query = OrderStats::query();
-//
-//        $this->assertInstanceOf(StatsQuery::class, $query);
-//        $this->assertInstanceOf(OrderStats::class, $query->getStatistic());
-//    }
+    /** @test */
+    public function it_can_pass_and_receive_attributes()
+    {
+        $writer = StatsWriter::for(StatsEvent::class, ['customer_attrib' => 'custom_val']);
+
+        $this->assertInstanceOf(StatsWriter::class, $writer);
+        $this->assertSame(['customer_attrib' => 'custom_val'], $writer->getAttributes());
+    }
 
 //    /** @test */
 //    public function it_can_get_the_value_at_a_given_time()

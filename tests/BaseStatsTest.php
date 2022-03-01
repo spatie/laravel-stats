@@ -104,24 +104,6 @@ class BaseStatsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_a_stats_query_object()
-    {
-        $query = OrderStats::query();
-
-        $this->assertInstanceOf(StatsQuery::class, $query);
-        $this->assertSame(['name' => 'OrderStats'], $query->getAttributes());
-    }
-
-    /** @test */
-    public function it_can_get_a_stats_writer_object()
-    {
-        $writer = OrderStats::writer();
-
-        $this->assertInstanceOf(StatsWriter::class, $writer);
-        $this->assertSame(['name' => 'OrderStats'], $writer->getAttributes());
-    }
-
-    /** @test */
     public function it_can_get_the_value_at_a_given_time()
     {
         OrderStats::set(3, now()->subDays(19));
