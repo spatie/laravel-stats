@@ -472,4 +472,16 @@ class StatsQueryTest extends TestCase
 
         $this->assertEquals($expected, $stats->toArray());
     }
+
+    /** @test */
+    public function it_can_get_the_value_at_a_given_time()
+    {
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(19));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(4));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(2));
+
+        $this->assertEquals(0, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(30)));
+        $this->assertEquals(3, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(18)));
+        $this->assertEquals(5, StatsQuery::for(StatsEvent::class)->getValue(now()));
+    }
 }
