@@ -3,6 +3,7 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
+use Spatie\Stats\DataPoint;
 use Spatie\Stats\Models\Stat;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsQuery;
@@ -483,5 +484,25 @@ class StatsQueryTest extends TestCase
         $this->assertEquals(0, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(30)));
         $this->assertEquals(3, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(18)));
         $this->assertEquals(5, StatsQuery::for(StatsEvent::class)->getValue(now()));
+    }
+
+    /** @test */
+    public function it_will_generate_stats_grouped_by_year()
+    {
+        $stats = StatsQuery::for(StatsEvent::class)
+            ->start(now()->subYear())
+            ->end(now())
+            ->groupByWeek()
+            ->get();
+
+        $this->assertCount(53, $stats);
+
+        $this->assertInstanceOf(DataPoint::class, $stats[0]);
+        $this->assertSame('2018-12-31 00:00:00', (string)$stats[0]->start);
+        $this->assertSame('2019-01-07 00:00:00', (string)$stats[0]->end);
+
+        $this->assertInstanceOf(DataPoint::class, $stats[52]);
+        $this->assertSame('2019-12-30 00:00:00', (string)$stats[52]->start);
+        $this->assertSame('2020-01-06 00:00:00', (string)$stats[52]->end);
     }
 }

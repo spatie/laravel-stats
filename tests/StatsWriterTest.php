@@ -179,24 +179,4 @@ class StatsWriterTest extends TestCase
         $this->assertInstanceOf(StatsWriter::class, $writer);
         $this->assertSame(['customer_attrib' => 'custom_val'], $writer->getAttributes());
     }
-
-//    /** @test */
-//    public function it_can_generate_and_array_of_periods()
-//    {
-//        $periods = StatsQuery::for(OrderStats::class)->start(now()->subYear())->end(now())->generatePeriods();
-//
-//        $this->assertCount(53, $periods);
-//
-//        $this->assertEquals([
-//            Carbon::parse('2018-12-31'),
-//            Carbon::parse('2019-01-07'),
-//            '201901',
-//        ], $periods[0]);
-//
-//        $this->assertEquals([
-//            Carbon::parse('2019-12-30'),
-//            Carbon::parse('2020-01-06'),
-//            '202001',
-//        ], $periods[52]);
-//    }
 }
