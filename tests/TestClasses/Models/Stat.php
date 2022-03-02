@@ -1,8 +1,9 @@
 <?php
 
-namespace Spatie\Stats\Models;
+namespace Spatie\Stats\Tests\TestClasses\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Stats\Models\StatsEvent;
 
 class Stat extends Model
 {

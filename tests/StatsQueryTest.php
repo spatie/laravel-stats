@@ -4,12 +4,12 @@ namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
 use Spatie\Stats\DataPoint;
-use Spatie\Stats\Models\Stat;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsQuery;
 use Spatie\Stats\StatsWriter;
 use Spatie\Stats\Tests\Stats\CustomerStats;
 use Spatie\Stats\Tests\Stats\OrderStats;
+use Spatie\Stats\Tests\TestClasses\Models\Stat;
 
 class StatsQueryTest extends TestCase
 {
