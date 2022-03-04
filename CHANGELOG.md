@@ -17,15 +17,15 @@ All notable changes to `laravel-stats` will be documented in this file
 ### Breaking changes
 
 - Changed visibility of `StatsQuery::for($model)->generatePeriods()` from `public` to `protected`
-- Changed visibility of `StatsQuery::get()` from `public` to `protected`
+- Changed visibility of `StatsQuery::getPeriodTimestampFormat()` from `public` to `protected`
 - Replaced `StatsQuery::for($model)->getStatistic()` with `StatsQuery::for($model)->getAttributes()`
 - Removed `BaseStats->createEvent()` 
 
 ### Migrations
 
 - Replace `StatsQuery::for(OrderStats::class)` with `OrderStats::query()`
-- Replace `StatsEvent::TYPE_SET` use `DataPoint::TYPE_SET` instead
-- Replace `StatsEvent::TYPE_CHANGE` use `DataPoint::TYPE_CHANGE` instead
+- Replace `StatsEvent::TYPE_SET` with `DataPoint::TYPE_SET`
+- Replace `StatsEvent::TYPE_CHANGE` with `DataPoint::TYPE_CHANGE`
 
 ## 1.0.1 - 2022-02-02
 
