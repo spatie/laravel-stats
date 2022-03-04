@@ -3,8 +3,6 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
-use Spatie\Stats\StatsQuery;
-use Spatie\Stats\StatsWriter;
 use Spatie\Stats\Tests\Stats\OrderStats;
 
 class BaseStatsTest extends TestCase

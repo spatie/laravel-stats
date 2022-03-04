@@ -7,7 +7,6 @@ use Spatie\Stats\Models\StatsEvent;
 
 class Stat extends Model
 {
-
     public function events()
     {
         return $this->hasMany(StatsEvent::class);

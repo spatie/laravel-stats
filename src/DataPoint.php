@@ -7,7 +7,6 @@ use Illuminate\Contracts\Support\Arrayable;
 
 class DataPoint implements Arrayable
 {
-
     const TYPE_SET = 'set';
     const TYPE_CHANGE = 'change';
 

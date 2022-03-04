@@ -7,7 +7,6 @@ use Spatie\Stats\StatsQuery;
 
 trait HasStats
 {
-
     public function scopeGroupByPeriod(Builder $query, string $period): void
     {
         $periodGroupBy = StatsQuery::getPeriodDateFormat($period);
