@@ -162,21 +162,21 @@ class StatsQuery
         return $startValue + $differenceSinceSet;
     }
 
-    public function getPeriodTimestampFormat(): string
-    {
-        return match ($this->period) {
-            'year' => 'Y',
-            'month' => 'Y-m',
-            'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
-            'day' => 'Y-m-d',
-            'hour' => 'Y-m-d H',
-            'minute' => 'Y-m-d H:i',
-        };
-    }
-
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    public static function getPeriodDateFormat(string $period): string
+    {
+        return match ($period) {
+            'year' => "date_format(created_at,'%Y')",
+            'month' => "date_format(created_at,'%Y-%m')",
+            'week' => "yearweek(created_at, 3)", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'day' => "date_format(created_at,'%Y-%m-%d')",
+            'hour' => "date_format(created_at,'%Y-%m-%d %H')",
+            'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
+        };
     }
 
     protected function generatePeriods(): Collection
@@ -197,15 +197,15 @@ class StatsQuery
         return $data;
     }
 
-    protected static function getPeriodDateFormat(string $period): string
+    protected function getPeriodTimestampFormat(): string
     {
-        return match ($period) {
-            'year' => "date_format(created_at,'%Y')",
-            'month' => "date_format(created_at,'%Y-%m')",
-            'week' => "yearweek(created_at, 3)", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
-            'day' => "date_format(created_at,'%Y-%m-%d')",
-            'hour' => "date_format(created_at,'%Y-%m-%d %H')",
-            'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
+        return match ($this->period) {
+            'year' => 'Y',
+            'month' => 'Y-m',
+            'week' => 'oW', // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'day' => 'Y-m-d',
+            'hour' => 'Y-m-d H',
+            'minute' => 'Y-m-d H:i',
         };
     }
 

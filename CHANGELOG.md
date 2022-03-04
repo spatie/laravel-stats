@@ -2,7 +2,7 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
-## 2.0.0 - 2022-02-20
+## 2.0.0 - 2022-03-04
 
 ### Added
  
@@ -14,9 +14,10 @@ All notable changes to `laravel-stats` will be documented in this file
 - Extended `StatsQuery` with additional attributes (`StatsQuery::for(StatsEvent::class, ['name' => 'OrderStats'])`)
 - Extended `BaseStats` with direct writer access (`OrderStats::writer()` as addition to `OrderStats::query()`)
 
-### Changed (breaks BC)
+### Breaking changes
 
 - Changed visibility of `StatsQuery::for($model)->generatePeriods()` from `public` to `protected`
+- Changed visibility of `StatsQuery::get()` from `public` to `protected`
 - Replaced `StatsQuery::for($model)->getStatistic()` with `StatsQuery::for($model)->getAttributes()`
 - Removed `BaseStats->createEvent()` 
 
