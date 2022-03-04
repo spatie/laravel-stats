@@ -3,8 +3,13 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
+use Spatie\Stats\DataPoint;
+use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsQuery;
+use Spatie\Stats\StatsWriter;
+use Spatie\Stats\Tests\Stats\CustomerStats;
 use Spatie\Stats\Tests\Stats\OrderStats;
+use Spatie\Stats\Tests\TestClasses\Models\Stat;
 
 class StatsQueryTest extends TestCase
 {
@@ -16,8 +21,25 @@ class StatsQueryTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_stats()
+    public function it_can_pass_and_receive_attributes()
     {
+        $query = StatsQuery::for(StatsEvent::class, ['custom_attribute' => 'custom_value']);
+
+        $this->assertInstanceOf(StatsQuery::class, $query);
+        $this->assertSame(['custom_attribute' => 'custom_value'], $query->getAttributes());
+    }
+
+    /** @test */
+    public function it_can_get_stats_for_base_stats_class()
+    {
+        // adding customer stats, to proof name is correctly set
+        CustomerStats::set(3, now()->subMonth());
+        CustomerStats::decrease(1, now()->subDays(13));
+        CustomerStats::increase(3, now()->subDays(12));
+        CustomerStats::set(3, now()->subDays(6));
+        CustomerStats::decrease(1, now()->subDays(5));
+        CustomerStats::increase(3, now()->subDays(4));
+
         OrderStats::set(3, now()->subMonth());
         OrderStats::decrease(1, now()->subDays(13));
         OrderStats::increase(3, now()->subDays(12));
@@ -25,7 +47,125 @@ class StatsQueryTest extends TestCase
         OrderStats::decrease(1, now()->subDays(5));
         OrderStats::increase(3, now()->subDays(4));
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = OrderStats::query()
+            ->start(now()->subWeeks(2))
+            ->end(now()->startOfWeek())
+            ->groupByWeek()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
+            ],
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_for_classname()
+    {
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subMonth());
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(13));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(12));
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(6));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(5));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(4));
+
+        $stats = StatsQuery::for(StatsEvent::class)
+            ->start(now()->subWeeks(2))
+            ->end(now()->startOfWeek())
+            ->groupByWeek()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
+            ],
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+
+    /** @test */
+    public function it_can_get_stats_for_object_instance()
+    {
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subMonth());
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(13));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(12));
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(6));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(5));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(4));
+
+        $stats = StatsQuery::for(new StatsEvent())
+            ->start(now()->subWeeks(2))
+            ->end(now()->startOfWeek())
+            ->groupByWeek()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(2)->startOfWeek(),
+                'end' => now()->subWeeks(1)->startOfWeek(),
+            ],
+            [
+                'value' => 5,
+                'increments' => +3,
+                'decrements' => 1,
+                'difference' => 2,
+                'start' => now()->subWeeks(1)->startOfWeek(),
+                'end' => now()->startOfWeek(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_for_has_many_relationship()
+    {
+        /** @var Stat $stat */
+        $stat = Stat::create();
+
+        StatsWriter::for($stat->events())->set(3, now()->subMonth());
+        StatsWriter::for($stat->events())->decrease(1, now()->subDays(13));
+        StatsWriter::for($stat->events())->increase(3, now()->subDays(12));
+        StatsWriter::for($stat->events())->set(3, now()->subDays(6));
+        StatsWriter::for($stat->events())->decrease(1, now()->subDays(5));
+        StatsWriter::for($stat->events())->increase(3, now()->subDays(4));
+
+        $stats = StatsQuery::for($stat->events())
             ->start(now()->subWeeks(2))
             ->end(now()->startOfWeek())
             ->groupByWeek()
@@ -56,13 +196,13 @@ class StatsQueryTest extends TestCase
     /** @test */
     public function it_can_get_stats_2()
     {
-        OrderStats::increase(100, now()->subMonth());
-        OrderStats::decrease(1, now()->subDays(13));
-        OrderStats::increase(3, now()->subDays(12));
-        OrderStats::decrease(1, now()->subDays(5));
-        OrderStats::increase(3, now()->subDays(4));
+        StatsWriter::for(StatsEvent::class)->increase(100, now()->subMonth());
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(13));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(12));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(5));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(4));
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subWeeks(2))
             ->end(now()->startOfWeek())
             ->groupByWeek()
@@ -93,9 +233,9 @@ class StatsQueryTest extends TestCase
     /** @test */
     public function it_can_get_stats_3()
     {
-        OrderStats::increase(3, now()->subDays(12));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(12));
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subWeeks(2))
             ->end(now()->startOfWeek())
             ->groupByWeek()
@@ -126,7 +266,7 @@ class StatsQueryTest extends TestCase
     /** @test */
     public function it_can_get_stats_4()
     {
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subWeeks(2))
             ->end(now()->startOfWeek())
             ->groupByWeek()
@@ -155,13 +295,68 @@ class StatsQueryTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_stats_by_attributes()
+    {
+        StatsWriter::for(StatsEvent::class, ['name' => 'one-off'])->increase(1, now()->hour(12));
+        StatsWriter::for(StatsEvent::class, ['name' => 'recurring'])->increase(1, now()->hour(12));
+
+        $stats = StatsQuery::for(StatsEvent::class, ['name' => 'recurring'])
+            ->start(now()->startOfDay())
+            ->end(now()->endOfDay())
+            ->groupByDay()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 1,
+                'increments' => 1,
+                'decrements' => 0,
+                'difference' => 1,
+                'start' => now()->startOfDay(),
+                'end' => now()->endOfDay()->addMicro(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_stats_by_attributes_for_has_many_relationship()
+    {
+        /** @var Stat $stat */
+        $stat = Stat::create();
+
+        StatsWriter::for($stat->events(), ['name' => 'one-off'])->increase(1, now()->hour(12));
+        StatsWriter::for($stat->events(), ['name' => 'recurring'])->increase(1, now()->hour(12));
+
+        $stats = StatsQuery::for($stat->events(), ['name' => 'recurring'])
+            ->start(now()->startOfDay())
+            ->end(now()->endOfDay())
+            ->groupByDay()
+            ->get();
+
+        $expected = [
+            [
+                'value' => 1,
+                'increments' => 1,
+                'decrements' => 0,
+                'difference' => 1,
+                'start' => now()->startOfDay(),
+                'end' => now()->endOfDay()->addMicro(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
     public function it_can_get_stats_grouped_by_day()
     {
-        OrderStats::set(3, now()->subDays(6));
-        OrderStats::decrease(1, now()->subDays(2));
-        OrderStats::increase(3, now()->subDays(1));
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(6));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(2));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(1));
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subDays(3))
             ->end(now())
             ->groupByDay()
@@ -200,11 +395,11 @@ class StatsQueryTest extends TestCase
     /** @test */
     public function it_can_get_stats_grouped_by_hour()
     {
-        OrderStats::set(3, now()->subHours(6));
-        OrderStats::decrease(1, now()->subHours(2));
-        OrderStats::increase(3, now()->subHours(1));
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subHours(6));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subHours(2));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subHours(1));
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subHours(3))
             ->end(now())
             ->groupByHour()
@@ -243,15 +438,15 @@ class StatsQueryTest extends TestCase
     /** @test */
     public function it_can_get_stats_based_on_youngest_sets_in_periods()
     {
-        OrderStats::set(1, now()->subHours(49));
-        OrderStats::set(2, now()->subHours(37));
-        OrderStats::set(3, now()->subHours(25)); // This set will be used for day 1
-        OrderStats::decrease(2, now()->subHours(16)); // These decrements and increments will still show up in day 2
-        OrderStats::set(4, now()->subHours(13));
-        OrderStats::increase(4, now()->subHours(8));
-        OrderStats::set(5, now()->subHours(1)); // This set will be used for day 2
+        StatsWriter::for(StatsEvent::class)->set(1, now()->subHours(49));
+        StatsWriter::for(StatsEvent::class)->set(2, now()->subHours(37));
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subHours(25)); // This set will be used for day 1
+        StatsWriter::for(StatsEvent::class)->decrease(2, now()->subHours(16)); // These decrements and increments will still show up in day 2
+        StatsWriter::for(StatsEvent::class)->set(4, now()->subHours(13));
+        StatsWriter::for(StatsEvent::class)->increase(4, now()->subHours(8));
+        StatsWriter::for(StatsEvent::class)->set(5, now()->subHours(1)); // This set will be used for day 2
 
-        $stats = StatsQuery::for(OrderStats::class)
+        $stats = StatsQuery::for(StatsEvent::class)
             ->start(now()->subDays(2))
             ->end(now())
             ->groupByDay()
@@ -277,5 +472,37 @@ class StatsQueryTest extends TestCase
         ];
 
         $this->assertEquals($expected, $stats->toArray());
+    }
+
+    /** @test */
+    public function it_can_get_the_value_at_a_given_time()
+    {
+        StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(19));
+        StatsWriter::for(StatsEvent::class)->decrease(1, now()->subDays(4));
+        StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(2));
+
+        $this->assertEquals(0, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(30)));
+        $this->assertEquals(3, StatsQuery::for(StatsEvent::class)->getValue(now()->subDays(18)));
+        $this->assertEquals(5, StatsQuery::for(StatsEvent::class)->getValue(now()));
+    }
+
+    /** @test */
+    public function it_will_generate_stats_grouped_by_year()
+    {
+        $stats = StatsQuery::for(StatsEvent::class)
+            ->start(now()->subYear())
+            ->end(now())
+            ->groupByWeek()
+            ->get();
+
+        $this->assertCount(53, $stats);
+
+        $this->assertInstanceOf(DataPoint::class, $stats[0]);
+        $this->assertSame('2018-12-31 00:00:00', (string)$stats[0]->start);
+        $this->assertSame('2019-01-07 00:00:00', (string)$stats[0]->end);
+
+        $this->assertInstanceOf(DataPoint::class, $stats[52]);
+        $this->assertSame('2019-12-30 00:00:00', (string)$stats[52]->start);
+        $this->assertSame('2020-01-06 00:00:00', (string)$stats[52]->end);
     }
 }
