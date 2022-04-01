@@ -1,0 +1,14 @@
+<?php
+
+namespace DummyNamespace;
+
+use Spatie\Stats\BaseStats;
+
+class DummyClass extends BaseStats
+{
+    /*
+    public function getName() : string {
+        return 'DummySlug'; // stats will be stored with using name `DummySlug`
+    }
+    */
+}

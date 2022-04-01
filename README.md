@@ -9,12 +9,9 @@
 
 This package is a lightweight solution to summarize changes in your database over time. Here's a quick example where we are going to track the number of subscriptions and cancellations over time.
 
-First, you should create a stats class.
-
-```php
-use Spatie\Stats\BaseStats;
-
-class SubscriptionStats extends BaseStats {}
+First, you should create a stats class:
+```bash
+php artisan make:stats SubscriptionStats
 ```
 
 Next, you can call `increase` on it when somebody subscribes, and `decrease` when somebody cancels their plan.
