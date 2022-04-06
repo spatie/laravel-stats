@@ -169,10 +169,12 @@ class StatsQuery
 
     public static function getPeriodDateFormat(string $period): string
     {
+        $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
+
         return match ($period) {
             'year' => "date_format(created_at,'%Y')",
             'month' => "date_format(created_at,'%Y-%m')",
-            'week' => "yearweek(created_at, 3)", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'week' => $dbDriver === 'mysql' ? "yearweek(created_at, 3)" : "strftime('%Y%W')", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
             'day' => "date_format(created_at,'%Y-%m-%d')",
             'hour' => "date_format(created_at,'%Y-%m-%d %H')",
             'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
