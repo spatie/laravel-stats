@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.0.1 - 2022-04-06
+
+## What's Changed
+
+- Support SQLite by @bumbummen99 in https://github.com/spatie/laravel-stats/pull/19
+
+## New Contributors
+
+- @bumbummen99 made their first contribution in https://github.com/spatie/laravel-stats/pull/19
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.0.0...2.0.1
+
 ## 2.0.0 - 2022-03-04
 
 ## What's Changed
