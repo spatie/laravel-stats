@@ -278,7 +278,7 @@ class StatsQuery
     protected function getStatsTableName(): string
     {
         if ($this->subject instanceof Relation) {
-            return $this->subject->getRelated()->getTable();
+            return $this->subject->getQuery()->getGrammar()->getTablePrefix().$this->subject->getRelated()->getTable();
         }
 
         /** @var Model $subject */
@@ -287,6 +287,6 @@ class StatsQuery
             $subject = new $subject;
         }
 
-        return $subject->getTable();
+        return $subject->getQuery()->getGrammar()->getTablePrefix().$subject->getTable();
     }
 }
