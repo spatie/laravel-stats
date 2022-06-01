@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.0.2 - 2022-06-01
+
+### What's Changed
+
+- Add table prefix to StatsQuery by @digitalkreativ in https://github.com/spatie/laravel-stats/pull/22
+
+### New Contributors
+
+- @digitalkreativ made their first contribution in https://github.com/spatie/laravel-stats/pull/22
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.0.1...2.0.2
+
 ## 2.0.1 - 2022-04-06
 
 ## What's Changed
