@@ -121,7 +121,7 @@ SubscriptionStats::increase(); // execute whenever somebody subscribes
 SubscriptionStats::decrease(); // execute whenever somebody cancels the subscription;
 ```
 
-Instead of manually increasing and decreasing the stat, you can directly set it. This is useful when you particular stat does not get calculated by your own app, but lives elsewhere.  Using the subscription example, let's image that subscriptions live elsewhere, and that there's an API call to get the count.
+Instead of manually increasing and decreasing the stat, you can directly set it. This is useful when your particular stat does not get calculated by your own app, but lives elsewhere.  Using the subscription example, let's image that subscriptions live elsewhere, and that there's an API call to get the count.
 
 ```php
 $count = AnAPi::getSubscriptionCount(); 
