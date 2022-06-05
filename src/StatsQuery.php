@@ -172,7 +172,7 @@ class StatsQuery
     {
         $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
         
-        if($dbDriver === 'postgres'){
+        if($dbDriver === 'pgsql'){
     
          return match ($period) {
             'year' => "to_char(created_at::timestamptz, 'YYYY')",
@@ -265,7 +265,7 @@ class StatsQuery
         $statsKey = $this->getStatsKey();
         $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
         
-        if($dbDriver === 'postgres'){
+        if($dbDriver === 'pgsql'){
 
            $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY {$statsKey} DESC) AS rn, *, {$periodDateFormat} as period")
