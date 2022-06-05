@@ -171,15 +171,31 @@ class StatsQuery
     public static function getPeriodDateFormat(string $period): string
     {
         $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
+        
+        if($dbDriver === 'postgres'){
+    
+         return match ($period) {
+            'year' => "to_char(created_at::timestamptz, 'YYYY')",
+            'month' => "to_char(created_at::timestamptz, 'YYYY-MM')",
+            'week' => "to_char(created_at::timestamptz, 'YYYYIW')",
+            'day' => "to_char(created_at::timestamptz, 'YYYY-MM-DD')",
+            'hour' => "to_char(created_at::timestamptz, 'YYYY-MM-DD HH24')",
+            'minute' => "to_char(created_at::timestamptz, 'YYYY-MM-DD HH24:MI')",
+         };
+            
+        } else {
 
-        return match ($period) {
+         return match ($period) {
             'year' => "date_format(created_at,'%Y')",
             'month' => "date_format(created_at,'%Y-%m')",
             'week' => $dbDriver === 'mysql' ? "yearweek(created_at, 3)" : "strftime('%Y%W')", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
             'day' => "date_format(created_at,'%Y-%m-%d')",
             'hour' => "date_format(created_at,'%Y-%m-%d %H')",
             'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
-        };
+         };
+              
+        }
+
     }
 
     protected function generatePeriods(): Collection
@@ -247,13 +263,26 @@ class StatsQuery
 
         $statsTable = $this->getStatsTableName();
         $statsKey = $this->getStatsKey();
+        $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
+        
+        if($dbDriver === 'postgres'){
 
-        $rankedSets = $this->queryStats()
+           $rankedSets = $this->queryStats()
+            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY {$statsKey} DESC) AS rn, *, {$periodDateFormat} as period")
+            ->where('type',"=", DataPoint::TYPE_SET)
+            ->where('created_at', '>=','"'.$this->start.'"')
+            ->where('created_at', '<','"'.$this->end.'"')
+            ->get();
+
+        } else {
+           $rankedSets = $this->queryStats()
             ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `{$statsKey}` DESC) AS rn, `{$statsTable}`.*, {$periodDateFormat} as period")
             ->where('type', DataPoint::TYPE_SET)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
-            ->get();
+            ->get();         
+        }
+
 
         $latestSetPerPeriod = $rankedSets->where('rn', 1);
 
