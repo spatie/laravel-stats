@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.0.3 - 2022-07-29
+
+### What's Changed
+
+- fix typo in README.md. by @fsamapoor in https://github.com/spatie/laravel-stats/pull/23
+- Support PostgreSQL by @skollro in https://github.com/spatie/laravel-stats/pull/27
+
+### New Contributors
+
+- @fsamapoor made their first contribution in https://github.com/spatie/laravel-stats/pull/23
+- @skollro made their first contribution in https://github.com/spatie/laravel-stats/pull/27
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.0.2...2.0.3
+
 ## 2.0.2 - 2022-06-01
 
 ### What's Changed
