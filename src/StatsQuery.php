@@ -172,6 +172,17 @@ class StatsQuery
     {
         $dbDriver = Config::get('database.connections.'.Config::get('database.default', 'mysql').'.driver', 'mysql');
 
+        if ($dbDriver === 'pgsql') {
+            return match ($period) {
+                'year' => "to_char(created_at, 'YYYY')",
+                'month' => "to_char(created_at, 'YYYY-MM')",
+                'week' => "to_char(created_at, 'IYYYIW')",
+                'day' => "to_char(created_at, 'YYYY-MM-DD')",
+                'hour' => "to_char(created_at, 'YYYY-MM-DD HH24')",
+                'minute' => "to_char(created_at, 'YYYY-MM-DD HH24:MI')",
+            };
+        }
+
         return match ($period) {
             'year' => "date_format(created_at,'%Y')",
             'month' => "date_format(created_at,'%Y-%m')",
@@ -245,11 +256,13 @@ class StatsQuery
     {
         $periodDateFormat = static::getPeriodDateFormat($this->period);
 
-        $statsTable = $this->getStatsTableName();
-        $statsKey = $this->getStatsKey();
+        $query = $this->queryStats();
 
-        $rankedSets = $this->queryStats()
-            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY `{$statsKey}` DESC) AS rn, `{$statsTable}`.*, {$periodDateFormat} as period")
+        $statsTable = $query->getGrammar()->wrap($this->getStatsTableName());
+        $statsKey = $query->getGrammar()->wrap($this->getStatsKey());
+
+        $rankedSets = $query
+            ->selectRaw("ROW_NUMBER() OVER (PARTITION BY {$periodDateFormat} ORDER BY {$statsKey} DESC) AS rn, {$statsTable}.*, {$periodDateFormat} as period")
             ->where('type', DataPoint::TYPE_SET)
             ->where('created_at', '>=', $this->start)
             ->where('created_at', '<', $this->end)
