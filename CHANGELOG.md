@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.0.4 - 2022-08-31
+
+### What's Changed
+
+- Performance Improvement by removing get queries by @noamanahmed-omniful in https://github.com/spatie/laravel-stats/pull/28
+
+### New Contributors
+
+- @noamanahmed-omniful made their first contribution in https://github.com/spatie/laravel-stats/pull/28
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.0.3...2.0.4
+
 ## 2.0.3 - 2022-07-29
 
 ### What's Changed
