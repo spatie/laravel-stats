@@ -95,19 +95,13 @@ class StatsQuery
     {
         $periods = $this->generatePeriods();
 
-        $changes = $this->queryStats()
-            ->where('type', DataPoint::TYPE_CHANGE)
-            ->where('created_at', '>=', $this->start)
-            ->where('created_at', '<', $this->end)
-            ->get();
-
         $differencesPerPeriod = $this->getDifferencesPerPeriod();
 
         $latestSetPerPeriod = $this->getLatestSetPerPeriod();
 
         $lastPeriodValue = $this->getValue($this->start);
 
-        return $periods->map(function (array $periodBoundaries) use ($latestSetPerPeriod, $changes, $differencesPerPeriod, &$lastPeriodValue) {
+        return $periods->map(function (array $periodBoundaries) use ($latestSetPerPeriod, $differencesPerPeriod, &$lastPeriodValue) {
             [$periodStart, $periodEnd, $periodKey] = $periodBoundaries;
 
             $setEvent = $latestSetPerPeriod->where('period', $periodKey)->first();
@@ -116,7 +110,8 @@ class StatsQuery
 
             $applyChangesAfter = $setEvent['created_at'] ?? $periodStart;
 
-            $difference = $changes
+            $difference = $this->queryStats()
+                ->where('type', DataPoint::TYPE_CHANGE)
                 ->where('created_at', '>=', $applyChangesAfter)
                 ->where('created_at', '<', $periodEnd)
                 ->sum('value');
