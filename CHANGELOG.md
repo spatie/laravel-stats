@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.1.0 - 2022-12-09
+
+### What's Changed
+
+- Add Group By Minute Period by @DexterHarrison in https://github.com/spatie/laravel-stats/pull/31
+
+### New Contributors
+
+- @DexterHarrison made their first contribution in https://github.com/spatie/laravel-stats/pull/31
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.0.4...2.1.0
+
 ## 2.0.4 - 2022-08-31
 
 ### What's Changed
