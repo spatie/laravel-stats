@@ -76,6 +76,13 @@ class StatsQuery
         return $this;
     }
 
+    public function groupByMinute(): self
+    {
+        $this->period = 'minute';
+
+        return $this;
+    }
+
     public function start(DateTimeInterface $start): self
     {
         $this->start = $start;
