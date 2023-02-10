@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.1.1 - 2023-02-10
+
+- Support Laravel 10
+- Support PHP 8.2
+
 ## 2.1.0 - 2022-12-09
 
 ### What's Changed
