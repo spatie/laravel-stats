@@ -24,8 +24,6 @@
     "require": {
         "php": "^8.0",
         "illuminate/contracts": "^8.73|^9.0|^10.0",
-        "laravel/framework": "10.*",
-        "orchestra/testbench": "8.*",
         "spatie/laravel-package-tools": "^1.9.2"
     },
     "require-dev": {
