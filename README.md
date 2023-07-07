@@ -129,7 +129,7 @@ $count = AnAPi::getSubscriptionCount();
 SubscriptionStats::set($count);
 ```
 
-By default, that `increase`, `decrease` and `sets` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happened on that moment.
+By default, that `increase`, `decrease` and `set` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happened on that moment.
 
 ```php
 SubscriptionStats::increase(1, $subscription->created_at); 
