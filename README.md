@@ -137,7 +137,7 @@ SubscriptionStats::increase(1, $subscription->created_at);
 
 ### Step 3: query the stats
 
-With this in place, you can query the stats. You can fetch stats for a certain period and group it by day, week, month. 
+With this in place, you can query the stats. You can fetch stats for a certain period and group them by minute, hour, day, week, month, or year. 
 
 Here's how you can get the subscription stats for the past two months,
 grouped by week.
