@@ -129,7 +129,7 @@ $count = AnAPi::getSubscriptionCount();
 SubscriptionStats::set($count);
 ```
 
-By default, that `increase`, `decrease` and `sets` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happened on that moment.
+By default, that `increase`, `decrease` and `set` methods assume that the event that caused your stats to change, happened right now. Optionally, you can pass a date time as a second parameter to these methods. Your stat change will be recorded as if it happened on that moment.
 
 ```php
 SubscriptionStats::increase(1, $subscription->created_at); 
@@ -137,7 +137,7 @@ SubscriptionStats::increase(1, $subscription->created_at);
 
 ### Step 3: query the stats
 
-With this in place, you can query the stats. You can fetch stats for a certain period and group it by day, week, month. 
+With this in place, you can query the stats. You can fetch stats for a certain period and group them by minute, hour, day, week, month, or year. 
 
 Here's how you can get the subscription stats for the past two months,
 grouped by week.
