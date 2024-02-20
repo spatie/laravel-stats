@@ -183,8 +183,8 @@ This will return an array containing arrayable `Spatie\Stats\DataPoint` objects.
 
 ```php
 StatsWriter::for(MyCustomModel::class)->set(123)
-StatsWriter::for(MyCustomModel::class, ['custom_column' => '123'])->increment(1)
-StatsWriter::for(MyCustomModel::class, ['another_column' => '234'])->decrement(1, now()->subDay())
+StatsWriter::for(MyCustomModel::class, ['custom_column' => '123'])->increase(1)
+StatsWriter::for(MyCustomModel::class, ['another_column' => '234'])->decrease(1, now()->subDay())
 
 $stats = StatsQuery::for(MyCustomModel::class)
     ->start(now()->subMonths(2))
