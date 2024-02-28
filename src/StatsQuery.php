@@ -185,10 +185,21 @@ class StatsQuery
             };
         }
 
+        if ($dbDriver === 'sqlite') {
+            return match ($period) {
+                'year' => "strftime('%Y', created_at)",
+                'month' => "strftime('%Y-%m', created_at)",
+                'week' => "strftime('%Y%W', created_at)",
+                'day' => "strftime('%Y-%m-%d', created_at)",
+                'hour' => "strftime('%Y-%m-%d %H', created_at)",
+                'minute' => "strftime('%Y-%m-%d %H:%M', created_at)",
+            };
+        }
+
         return match ($period) {
             'year' => "date_format(created_at,'%Y')",
             'month' => "date_format(created_at,'%Y-%m')",
-            'week' => $dbDriver === 'mysql' ? "yearweek(created_at, 3)" : "strftime('%Y%W')", // see https://stackoverflow.com/questions/15562270/php-datew-vs-mysql-yearweeknow
+            'week' => "yearweek(created_at, 3)",
             'day' => "date_format(created_at,'%Y-%m-%d')",
             'hour' => "date_format(created_at,'%Y-%m-%d %H')",
             'minute' => "date_format(created_at,'%Y-%m-%d %H:%i')",
