@@ -2,6 +2,22 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.2.0 - 2024-02-29
+
+### What's Changed
+
+* Update README.md by @gauravmak in https://github.com/spatie/laravel-stats/pull/33
+* Fix method name in docs by @ManojKiranA in https://github.com/spatie/laravel-stats/pull/35
+* Completing SQLite Support by @abishekrsrikaanth in https://github.com/spatie/laravel-stats/pull/37
+
+### New Contributors
+
+* @gauravmak made their first contribution in https://github.com/spatie/laravel-stats/pull/33
+* @ManojKiranA made their first contribution in https://github.com/spatie/laravel-stats/pull/35
+* @abishekrsrikaanth made their first contribution in https://github.com/spatie/laravel-stats/pull/37
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.1.1...2.2.0
+
 ## 2.1.1 - 2023-02-10
 
 - Support Laravel 10
