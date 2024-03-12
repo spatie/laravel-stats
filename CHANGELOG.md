@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.3.0 - 2024-03-12
+
+### What's Changed
+
+* l11 support by @finndev in https://github.com/spatie/laravel-stats/pull/38
+
+### New Contributors
+
+* @finndev made their first contribution in https://github.com/spatie/laravel-stats/pull/38
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.2.0...2.3.0
+
 ## 2.2.0 - 2024-02-29
 
 ### What's Changed
