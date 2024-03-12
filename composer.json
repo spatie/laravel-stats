@@ -30,7 +30,7 @@
         "nesbot/carbon": "^2.63|^3.0",
         "doctrine/dbal": "^3.6",
         "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
-        "phpunit/phpunit": "^9.4",
+        "phpunit/phpunit": "^9.4|^10.0",
         "vimeo/psalm": "^4.12"
     },
     "autoload": {
