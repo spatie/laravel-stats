@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.3.1 - 2025-03-08
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.3.0...2.3.1
+
 ## 2.3.0 - 2024-03-12
 
 ### What's Changed
