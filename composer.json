@@ -29,8 +29,8 @@
     "require-dev": {
         "nesbot/carbon": "^2.63|^3.0",
         "doctrine/dbal": "^3.6",
-        "orchestra/testbench": "^7.0|^8.0|^9.0",
-        "phpunit/phpunit": "^9.4|^10.0|^11.0"
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.0"
     },
     "autoload": {
         "psr-4": {
