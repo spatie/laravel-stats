@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-stats` will be documented in this file
 
+## 2.4.0 - 2026-04-13
+
+### What's Changed
+
+* Update issue template by @AlexVanderbist in https://github.com/spatie/laravel-stats/pull/44
+* Add Laravel 13 support by @ManukMinasyan in https://github.com/spatie/laravel-stats/pull/45
+
+### New Contributors
+
+* @AlexVanderbist made their first contribution in https://github.com/spatie/laravel-stats/pull/44
+* @ManukMinasyan made their first contribution in https://github.com/spatie/laravel-stats/pull/45
+
+**Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.3.1...2.4.0
+
 ## 2.3.1 - 2025-03-08
 
 **Full Changelog**: https://github.com/spatie/laravel-stats/compare/2.3.0...2.3.1
