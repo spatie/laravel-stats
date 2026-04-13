@@ -3,6 +3,7 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Stats\DataPoint;
 use Spatie\Stats\Models\StatsEvent;
 use Spatie\Stats\StatsQuery;
@@ -20,7 +21,7 @@ class StatsQueryTest extends TestCase
         Carbon::setTestNow('2020-01-01');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_pass_and_receive_attributes()
     {
         $query = StatsQuery::for(StatsEvent::class, ['custom_attribute' => 'custom_value']);
@@ -29,7 +30,7 @@ class StatsQueryTest extends TestCase
         $this->assertSame(['custom_attribute' => 'custom_value'], $query->getAttributes());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_for_base_stats_class()
     {
         // adding customer stats, to proof name is correctly set
@@ -75,7 +76,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_for_classname()
     {
         StatsWriter::for(StatsEvent::class)->set(3, now()->subMonth());
@@ -114,7 +115,7 @@ class StatsQueryTest extends TestCase
     }
 
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_for_object_instance()
     {
         StatsWriter::for(StatsEvent::class)->set(3, now()->subMonth());
@@ -152,7 +153,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_for_has_many_relationship()
     {
         /** @var Stat $stat */
@@ -193,7 +194,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_2()
     {
         StatsWriter::for(StatsEvent::class)->increase(100, now()->subMonth());
@@ -230,7 +231,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_3()
     {
         StatsWriter::for(StatsEvent::class)->increase(3, now()->subDays(12));
@@ -263,7 +264,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_4()
     {
         $stats = StatsQuery::for(StatsEvent::class)
@@ -294,7 +295,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_by_attributes()
     {
         StatsWriter::for(StatsEvent::class, ['name' => 'one-off'])->increase(1, now()->hour(12));
@@ -320,7 +321,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_by_attributes_for_has_many_relationship()
     {
         /** @var Stat $stat */
@@ -349,7 +350,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_grouped_by_day()
     {
         StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(6));
@@ -392,7 +393,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_grouped_by_hour()
     {
         StatsWriter::for(StatsEvent::class)->set(3, now()->subHours(6));
@@ -435,7 +436,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_stats_based_on_youngest_sets_in_periods()
     {
         StatsWriter::for(StatsEvent::class)->set(1, now()->subHours(49));
@@ -474,7 +475,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals($expected, $stats->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_the_value_at_a_given_time()
     {
         StatsWriter::for(StatsEvent::class)->set(3, now()->subDays(19));
@@ -486,7 +487,7 @@ class StatsQueryTest extends TestCase
         $this->assertEquals(5, StatsQuery::for(StatsEvent::class)->getValue(now()));
     }
 
-    /** @test */
+    #[Test]
     public function it_will_generate_stats_grouped_by_year()
     {
         $stats = StatsQuery::for(StatsEvent::class)
