@@ -3,6 +3,7 @@
 namespace Spatie\Stats\Tests;
 
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Stats\Tests\Stats\OrderStats;
 
 class BaseStatsTest extends TestCase
@@ -14,7 +15,7 @@ class BaseStatsTest extends TestCase
         Carbon::setTestNow('2020-01-01');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_increments()
     {
         $stats = new OrderStats();
@@ -28,7 +29,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_increments_at_a_given_timestamp()
     {
         $stats = new OrderStats();
@@ -43,7 +44,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_decrements()
     {
         $stats = new OrderStats();
@@ -57,7 +58,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_decrements_at_a_given_timestamp()
     {
         $stats = new OrderStats();
@@ -72,7 +73,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_setting_fixed_values()
     {
         $stats = new OrderStats();
@@ -86,7 +87,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_events_for_setting_fixed_values_at_a_given_timestamp()
     {
         $stats = new OrderStats();
@@ -101,7 +102,7 @@ class BaseStatsTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_the_value_at_a_given_time()
     {
         OrderStats::set(3, now()->subDays(19));
