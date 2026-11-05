@@ -9,7 +9,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest ]
-        php: [ 8.4, 8.3, 8.2 ]
+        php: [ 8.6, 8.5, 8.4, 8.3, 8.2 ]
         laravel: [ 13.*, 12.*]
         dependency-version: [ prefer-lowest, prefer-stable ]
         exclude:
@@ -17,6 +17,20 @@ jobs:
             laravel: 13.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: laravel_stats_test
+        ports:
+          - 3306/tcp
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout code
@@ -34,11 +48,6 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Create database
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql  -u root -proot -e 'CREATE DATABASE IF NOT EXISTS laravel_stats_test;'
-
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
@@ -49,4 +58,3 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports[3306] }}
           DB_PASSWORD: root
-
